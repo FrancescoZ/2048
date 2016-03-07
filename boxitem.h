@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QWidget>
 
-class BoxItem:public QWidget
+class BoxItem:public QObject
 {
     Q_OBJECT
 
@@ -16,7 +16,7 @@ class BoxItem:public QWidget
         QString boxColor=0,boxBorder=0,boxValue=0;
         bool boxVisible;
     public:
-        explicit BoxItem(QWidget *parent=0);
+        explicit BoxItem(QObject *parent=0);
         void UpdateBox(){
             emit boxChanged();
         }

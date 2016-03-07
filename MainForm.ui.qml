@@ -11,7 +11,7 @@ Item {
     property alias playArea: playArea
     property alias startButton: startButton
 
-    GridLayout {
+    Grid {
         id: gameTable
         objectName: "gameTable"
         x: 0
@@ -24,6 +24,16 @@ Item {
         rows: 4
         columns: 4
 
+        Repeater {
+            id: repBox
+            objectName: "repBox"
+
+            model:16
+            Box{
+                height: 50
+                width:50
+            }
+        }
 
 
 
