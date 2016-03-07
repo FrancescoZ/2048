@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>MainForm.ui.qml</file>
-        <file>Box.qml</file>
-        <file>play.png</file>
-    </qresource>
-</RCC>
