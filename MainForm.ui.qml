@@ -11,7 +11,7 @@ Item {
     property alias playArea: playArea
     property alias startButton: startButton
 
-    Grid {
+    GridLayout {
         id: gameTable
         objectName: "gameTable"
         x: 0
@@ -21,73 +21,9 @@ Item {
         anchors.bottomMargin: 70
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 10
         rows: 4
         columns: 4
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
-        Box{
-            width:50
-            height:50
-        }
+
 
 
 
@@ -107,7 +43,7 @@ Item {
         MouseArea {
             id: playArea
             anchors.fill: parent
-            onClicked: startButton.playSignal()
+            onClicked: startButton.playSignal
 
         }
     }

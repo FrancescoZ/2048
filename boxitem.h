@@ -2,8 +2,9 @@
 #define BOXITEM_H
 
 #include <QObject>
+#include <QWidget>
 
-class BoxItem:public QObject
+class BoxItem:public QWidget
 {
     Q_OBJECT
 
@@ -15,7 +16,7 @@ class BoxItem:public QObject
         QString boxColor=0,boxBorder=0,boxValue=0;
         bool boxVisible;
     public:
-        explicit BoxItem(QObject *parent=0);
+        explicit BoxItem(QWidget *parent=0);
         void UpdateBox(){
             emit boxChanged();
         }
