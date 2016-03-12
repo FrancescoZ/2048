@@ -7,9 +7,6 @@ Item {
     width: 300
     height: 350
 
-    property alias gameTable: gameTable
-    property alias playArea: playArea
-    property alias startButton: startButton
 
     Grid {
         id: gameTable

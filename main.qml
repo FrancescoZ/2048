@@ -8,8 +8,54 @@ ApplicationWindow {
     height: 350
     title: qsTr("2048")
 
+    Image {
+        id: startButton
+        objectName: "startButton"
+        x: 35
+        y: 19
+        width: 36
+        height: 36
+        source: "play.png"
 
-    MainForm {
-        anchors.fill: parent
+        signal playSignal()
+
+        MouseArea {
+            id: playArea
+            anchors.fill: parent
+            onClicked: startButton.playSignal
+        }
     }
+
+    Grid {
+        id: gameTable
+        objectName: "gameTable"
+        x: 0
+        y: 42
+        width: 250
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 70
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        rows: 4
+        columns: 4
+
+        Repeater {
+            id: repBox
+            objectName: "repBox"
+
+            model:16
+            Box{
+                boxColor: viewTable.boxes[index/4][index%4].getColor()
+                height: 50
+                width:50
+
+            }
+        }
+
+    }
+
+
+
+
 }
+

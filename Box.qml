@@ -5,23 +5,25 @@ Item {
     width: 50
     height: 50
 
+    property alias boxColor: box.color
+    property alias boxBorderColor: box.border.color
+    property alias boxVisible: box.visible
+    property alias boxValue: value.text
+
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
 
         Rectangle {
             id:box
-            color: viewBoxItem.boxColor
             radius: 7
-            visible: viewBoxItem.boxVisible
             border.width: 2
-            border.color: viewBoxItem.boxBorder
             anchors.fill: parent
 
             Text {
                 id: value
                 color: "#ffffff"
-                text: viewBoxItem.boxValue
                 z: 1
                 styleColor: "#ffffff"
                 font.bold: true
@@ -38,11 +40,5 @@ Item {
         }
     }
 
-    Rectangle {
-        id: rectangle1
-        color: "#ada9a9"
-        z: -2
-        anchors.fill: parent
-    }
-
 }
+

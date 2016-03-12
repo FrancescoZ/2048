@@ -8,14 +8,19 @@ class BoxItem:public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString boxValue READ getValue NOTIFY boxChanged)
-    Q_PROPERTY(QString boxBorder READ getBorder NOTIFY boxChanged)
-    Q_PROPERTY(QString boxColor READ getColor NOTIFY boxChanged)
-    Q_PROPERTY(bool boxVisible READ getVisible() NOTIFY boxChanged)
     private :
         QString boxColor=0,boxBorder=0,boxValue=0;
         bool boxVisible;
     public:
+        // Copy constructor
+        BoxItem(const BoxItem &cSource)
+        {
+
+        }
+
+        BoxItem& operator= (const BoxItem &cSource){
+
+        }
         explicit BoxItem(QObject *parent=0);
         void UpdateBox(){
             emit boxChanged();
