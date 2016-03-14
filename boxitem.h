@@ -15,11 +15,14 @@ class BoxItem:public QObject
         // Copy constructor
         BoxItem(const BoxItem &cSource)
         {
-
+            this->boxValue=cSource.boxValue;
+            UpdateBox();
         }
 
         BoxItem& operator= (const BoxItem &cSource){
-
+            this->boxValue=cSource.boxValue;
+            UpdateBox();
+            return *this;
         }
         explicit BoxItem(QObject *parent=0);
         void UpdateBox(){

@@ -24,8 +24,8 @@ class GameHandler:public QObject
                     boxItems.push_back(vector<BoxItem>());
             for(int i=0;i<4;i++){
                 const BoxItem *temp=new BoxItem;
-                QObject::connect(temp, SIGNAL(boxChanged),
-                                     this, SLOT(boxChanged));
+                QObject::connect(temp, SIGNAL(boxChanged()),
+                                     this, SLOT(boxChanged()));
                 boxItems[i/4].push_back((*temp));
             }
         }

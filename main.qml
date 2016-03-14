@@ -45,7 +45,7 @@ ApplicationWindow {
 
             model:16
             Box{
-                boxColor: viewTable.boxes[index/4][index%4].getColor()
+                boxValue: viewTable.boxes[index/4][index%4].getValue()
                 height: 50
                 width:50
 

@@ -5,8 +5,8 @@ Item {
     width: 50
     height: 50
 
-    property alias boxColor: box.color
-    property alias boxBorderColor: box.border.color
+    //property alias boxColor: box.color
+    //property alias boxBorderColor: box.border.color
     property alias boxVisible: box.visible
     property alias boxValue: value.text
 
