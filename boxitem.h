@@ -1,62 +1,49 @@
 #ifndef BOXITEM_H
 #define BOXITEM_H
 
-#include <QObject>
-#include <QWidget>
+#include <QQuickItem>
+#include <vector>
 
-class BoxItem:public QObject
+using namespace std;
+
+class BoxItem: public QQuickItem
 {
     Q_OBJECT
+public:
+    BoxItem(QQmlEngine*, QQuickItem *, int , int , int , int, int);
+    ~BoxItem();
+    void destroy();
+    int getX();
+    int getY();
+    int getVal();
+    void setX(int);
+    void setY(int);
+    void setVal(int);
+    void refreshPosition();
+    void refreshValue();
 
-    private :
-        QString boxColor=0,boxBorder=0,boxValue=0;
-        bool boxVisible;
-    public:
-        // Copy constructor
-        BoxItem(const BoxItem &cSource)
-        {
-            this->boxValue=cSource.boxValue;
-            UpdateBox();
-        }
+    bool getMerged();
+    void changeMerged(bool);
+    bool getMerged2();
+    void changeMerged2(bool);
 
-        BoxItem& operator= (const BoxItem &cSource){
-            this->boxValue=cSource.boxValue;
-            UpdateBox();
-            return *this;
-        }
-        explicit BoxItem(QObject *parent=0);
-        void UpdateBox(){
-            emit boxChanged();
-        }
+private:
+    QQuickItem *object; //variable qui est liée à la partie graphique
+    int x; //garde la position x
+    int y; // garde la position y
+    int value; //garde la valeur
+    vector<int> placement; //garde les coordonées du tableau en fonction de la taille
+    bool merged; //true si elle a été mergé et doit être supprimé
+    bool merged2; //true si elle a été mergé et doit avoir sa valeur mise à jour
+    bool unMerged; //true si elle vient d'être "unmergé"
+    int taille; //taille du tableau
 
-        QString getValue(){
-            return boxValue;
-        }
-        QString getBorder(){
-            return boxBorder;
-        }
-        QString getColor(){
-            return boxColor;
-        }
-        bool getVisible(){
-            return boxVisible;
-        }
+    // garde les animations
+    QObject *hAni;
+    QObject *wAni;
+    QObject *xAni;
+    QObject *yAni;
 
-        void changeVisibility(bool value){
-            boxVisible=value;
-            UpdateBox();
-        }
-
-        void changeValue(int value){
-            if (value%2!=0)
-                changeVisibility(false);
-            boxValue=QString::number(value);
-            changeVisibility(true);
-            UpdateBox();
-        }
-
-    signals:
-        void boxChanged();
 };
 
 #endif // BOXITEM_H

@@ -8,7 +8,7 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     boxitem.cpp \
-    gamehandler.cpp
+    gamer.cpp
 
 RESOURCES += qml.qrc
 
@@ -22,4 +22,4 @@ DISTFILES +=
 
 HEADERS += \
     boxitem.h \
-    gamehandler.h
+    gamer.h

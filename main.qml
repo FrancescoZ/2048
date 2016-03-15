@@ -2,60 +2,143 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Dialogs 1.2
 
-ApplicationWindow {
+Rectangle {
     visible: true
-    width: 300
-    height: 350
-    title: qsTr("2048")
+    width: 500
+    height: 600
 
-    Image {
-        id: startButton
-        objectName: "startButton"
-        x: 35
-        y: 19
-        width: 36
-        height: 36
-        source: "play.png"
-
-        signal playSignal()
-
-        MouseArea {
-            id: playArea
-            anchors.fill: parent
-            onClicked: startButton.playSignal
+    ImageButton{
+        id:startGame
+        x: 219
+        y: 14
+        width: 83
+        height: 83
+        imageSource:"play.png"
+        onClicked: {
+            gamer.deleteCells();
+            gamer.startGame();
+            gameContainer.visibilite=false;
+            //rectangle1.foco=true;
         }
     }
 
-    Grid {
-        id: gameTable
-        objectName: "gameTable"
-        x: 0
-        y: 42
-        width: 250
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 70
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        rows: 4
-        columns: 4
+    Rectangle {
+        id: header
+        x: 5
+        y: 7
 
-        Repeater {
-            id: repBox
-            objectName: "repBox"
+        property bool foco: true
 
-            model:16
-            Box{
-                boxValue: viewTable.boxes[index/4][index%4].getValue()
-                height: 50
-                width:50
+        width: 193
+        height: 96
+        color: "#eec22e"
+        radius: 15
+        focus: foco
 
+        Keys.onPressed: {
+            if(!gamer.animRunning())
+            {
+                switch (event.key){
+                case Qt.Key_Up:
+                    gamer.up();
+                    break;
+                case Qt.Key_Down:
+                    gamer.down();
+                    break;
+                case Qt.Key_Left:
+                    gamer.left();
+                    break;
+                case Qt.Key_Right:
+                    gamer.right();
+                    break;
+                }
+                if(gamer.getScore()*1 > 20000 && gamer.getMaxValue() == 2048 && !gamer.getWin())
+                {
+                    gamerContainer.visibilite=true;
+                    gamerContainer.texte="Winner\n Keep going?";
+                    rectangle1.foco=false;
+                }
+                if(!gamer.gameStatus())
+                {
+                    gamerContainer.visibilite=true;
+                    gamerContainer.texte="End of Game";
+                    rectangle1.foco=false;
+
+                }
+            }
+        }
+
+        Text {
+            id: title
+            x: 18
+            y: 39
+            text: qsTr("2048")
+            font.family: "Verdana"
+            rotation: 0
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.bold: true
+            font.pixelSize: 56
+            color: "#f7f8f0"
+        }
+        MouseArea{
+            anchors.fill: parent;
+            onClicked:
+            {
+                gamerContainer.visibilite=true;
+                gamerContainer.texte="Developped by: \Francesco Zanoli\nMilter Shiniti Pesce";
+
+            }
+
+            Text {
+                id: text2
+                x: 108
+                y: 79
+                width: 92
+                height: 9
+                color: "#f1eded"
+                text: qsTr("for Hacker")
+                font.bold: true
+                font.pixelSize: 10
             }
         }
 
     }
 
+    GridBox {
+        id: grid
+        height: gamer.getGridSize
+        width: gamer.getGridSize
+        anchors.rightMargin: 19
+        anchors.bottomMargin: 23
+        anchors.leftMargin: 22
+        anchors.topMargin: 121
+        col: 4
+        row: 4
+        objectName: "grid"
+    }
+
+    GameContainer {
+        id: gameContainer
+        x: 36
+        y: 134
+        anchors.leftMargin: -177
+        visibilite: false
+        texte: "Game Over"
+        MouseArea {
+            anchors.fill: parent;
+            onClicked: {
+                parent.visibilite=false;
+                if (gamer.getScore()*1 > 20000 && gamer.getMaxValue() == 2048)gamer.gagnant();
+            }
+        }
 
 
-
+    }
 }
+
+
+
+
+
 
