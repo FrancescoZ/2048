@@ -36,8 +36,6 @@ Rectangle {
         focus: foco
 
         Keys.onPressed: {
-            if(!gamer.animRunning())
-            {
                 switch (event.key){
                 case Qt.Key_Up:
                     gamer.up();
@@ -52,20 +50,19 @@ Rectangle {
                     gamer.right();
                     break;
                 }
-                if(gamer.getScore()*1 > 20000 && gamer.getMaxValue() == 2048 && !gamer.getWin())
-                {
-                    gamerContainer.visibilite=true;
-                    gamerContainer.texte="Winner\n Keep going?";
-                    rectangle1.foco=false;
-                }
+                /* if(gamer.getScore()*1 > 20000 && gamer.getMaxValue() == 2048 && !gamer.getWin())
+               {
+                    gameContainer.visibilite=true;
+                    gameContainer.texte="Winner\n Keep going?";
+                    header.foco=false;
+                }*/
                 if(!gamer.gameStatus())
                 {
-                    gamerContainer.visibilite=true;
-                    gamerContainer.texte="End of Game";
-                    rectangle1.foco=false;
+                    gameContainer.visibilite=true;
+                    gameContainer.texte="End of Game";
+                    header.foco=false;
 
                 }
-            }
         }
 
         Text {
@@ -107,8 +104,8 @@ Rectangle {
 
     GridBox {
         id: grid
-        height: gamer.getGridSize
-        width: gamer.getGridSize
+        height: 450
+        width: 450
         anchors.rightMargin: 19
         anchors.bottomMargin: 23
         anchors.leftMargin: 22

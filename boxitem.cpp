@@ -84,7 +84,7 @@ void BoxItem::refreshValue()
     object->setProperty("valeur", value);
     object->setProperty("taille", 424/taille-6);
 
-   // qDebug()<<"refreshed";
+   //qDebug()<<"refreshed";
 
 }
 
@@ -106,4 +106,26 @@ bool BoxItem::getMerged2()
 void BoxItem::changeMerged2(bool a)
 {
     merged2=a;
+}
+
+bool BoxItem::getAnimRunning()
+{
+
+    /*if(hAni!=NULL && hAni->property("running").toBool()) return true;
+    if(wAni!=NULL && wAni->property("running").toBool()) return true;
+    if(xAni!=NULL && xAni->property("running").toBool()) return true;
+    if(yAni!=NULL && yAni->property("running").toBool()) return true;
+*/
+    return false;
+
+}
+
+bool BoxItem::getUnMerged()
+{
+    return unMerged;
+}
+
+void BoxItem::changeUnMerged(bool a)
+{
+    unMerged=a;
 }

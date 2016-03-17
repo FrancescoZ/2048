@@ -48,7 +48,7 @@ public:
     QString getBestScore(){return "2";}
 
     void setActive(int ){}
-    Q_INVOKABLE bool gameStatus(){return false;}
+    Q_INVOKABLE bool gameStatus(){return true;}
 
     Q_INVOKABLE bool up();
     Q_INVOKABLE bool down();
@@ -56,7 +56,7 @@ public:
     Q_INVOKABLE bool right();
     Q_INVOKABLE void deleteCells();
 
-    Q_INVOKABLE bool animRunning(){return true;}
+    Q_INVOKABLE bool animRunning();
 
 private:
     QQmlEngine* _machine; //garde l'engine de la partie graphique
@@ -91,8 +91,8 @@ private:
     void readBestScore(){}
     void writeBestScore(){}
 
-    bool move(int row, int col, bool selectorRC, int inc, bool update = true){return false;}
-    bool merge(int row, int col, bool selectorRC, int inc, bool update = true){return false;}
+    bool move(int row, int col, bool selectorRC, int inc, bool update = true);
+    bool merge(int row, int col, bool selectorRC, int inc, bool update = true);
     bool iterateRC(int row, int col, bool selectorRC, int inc, bool update = true, bool nTab=true);
 
 signals:

@@ -91,5 +91,44 @@ Item {
             }
         }
 
+
+        Behavior on width {
+            enabled: animResizeEnable;
+            NumberAnimation {
+                objectName: "wAni";
+                duration: 100;
+
+            }
+        }
+
+        Behavior on height {
+            enabled: animResizeEnable;
+
+            NumberAnimation {
+                objectName: "hAni";
+                duration: 100;
+
+            }
+        }
     }
+    Behavior on x {
+        enabled: animMoveEnable
+        objectName: "xmove"
+        NumberAnimation {
+            objectName: "xAni";
+            duration: 100;
+
+        }
+    }
+
+    Behavior on y {
+        enabled: animMoveEnable
+        objectName: "ymove"
+        NumberAnimation {
+            objectName: "yAni";
+            duration: 100;
+
+        }
+    }
+
 }

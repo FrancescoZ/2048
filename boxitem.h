@@ -26,6 +26,10 @@ public:
     void changeMerged(bool);
     bool getMerged2();
     void changeMerged2(bool);
+    bool getUnMerged();
+    void changeUnMerged(bool);
+
+     bool getAnimRunning();
 
 private:
     QQuickItem *object; //variable qui est liée à la partie graphique
