@@ -81,7 +81,8 @@ private:
     vector<int> spawnedROW; //garde la coordonné y de la cellule "spawned" dans chaque pas
     vector<int> spawnedCOL; //garde la coordonné x de la cellule "spawned" dans chaque pas
 
-    int getCellIndice(int x,int y,bool  unMerged=false){return 0;}
+    int getCellIndice(int x,int y,bool  unMerged=false);
+    bool countcountBox(bool selectorRC,row,col);
     void showCells();
     void undo(){}
     void redo(){}

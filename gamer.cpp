@@ -172,20 +172,30 @@ void Gamer::showCells()
     if(c.size()!=count) qDebug()<<"error";
 
 }
-
+int Gamer::getCellIndice(int x,int y, bool unMerged)
+{
+    for (int i=0; i<c.size(); i++)
+    {
+        if(c[i]->getX()==x && c[i]->getY()==y  && (unMerged ? c[i]->getUnMerged() : !c[i]->getUnMerged()) && !c[i]->getMerged())
+            return i;
+    }
+    // si la fonction ne trouve pas la Cell correspondant, il y a un problème
+    // et le programme va casser
+    return -1;
+}
 
 
 bool Gamer::up(){
-    return iterateRC(0, 0, false, 1,true,true);
+    return iterateRC(taille-1, 0, false, -1,true,true);
 }
 bool Gamer::down(){
-    return iterateRC (taille-1, 0, false, -1);
+    return iterateRC (0, 0, false, 1);
 }
 bool Gamer::left(){
-    return iterateRC (0, 0, true, 1);
+    return iterateRC (0, 0, true, -1);
 }
 bool Gamer::right(){
-    return iterateRC (0, taille-1, true, -1);
+    return iterateRC (0, 0, true, 1,true,true);
 }
 
 bool Gamer::iterateRC(int row, int col, bool selectorRC, int inc, bool update, bool nTab){
@@ -238,9 +248,9 @@ bool Gamer::iterateRC(int row, int col, bool selectorRC, int inc, bool update, b
 
 
         // crée une nouvelle cellule
-        if(nTab) spawnCell();
+        //if(nTab) spawnCell();
         // "respawn" la cellule (cas redo())
-        else spawn(spawnedROW[active],spawnedCOL[active],tableaux[active][spawnedROW[active]][spawnedCOL[active]]);
+        //else spawn(spawnedROW[active],spawnedCOL[active],tableaux[active][spawnedROW[active]][spawnedCOL[active]]);
 
 
     }
@@ -251,11 +261,10 @@ bool Gamer::iterateRC(int row, int col, bool selectorRC, int inc, bool update, b
 
     return need2spawn;
 }
+bool Gamer::countcountBox(bool selectorRC,row,col){return true;}
 bool Gamer::move(int row, int col, bool selectorRC, int inc, bool update){
     int rowC = row;
     int colC = col;
-    int a[taille];
-    int ia = inc > 0 ? 0 : taille-1;
 
     //selectorRC indique si je doit scanner les coulons (false=up/down) ou
     //le ligne (true=left/right)
@@ -263,6 +272,35 @@ bool Gamer::move(int row, int col, bool selectorRC, int inc, bool update){
          (selectorRC ? row ++ : col ++)){
         row=(selectorRC ? row : rowC );
         col=(selectorRC ? colC : col);
+        int nBox=countBox(selectorRC,row,col);
+        for (int i=1;i<=nBox;i++)
+            for (; (!selectorRC ? row < taille-1 : col < taille-1);(!selectorRC ? row += inc : col += inc))
+                if (t[row][col]!=0)
+                {
+                    int newRow=0,newCol=0;
+                    switch(inc){
+                        case 'u':
+                            newCol=col;newRow=i;
+                            break;
+                        case 'd':
+                            newCol=col;newRow=taille-1-i;
+                            break;
+                        case 'l':
+                            newRow=row;newCol=i;
+                            break;
+                        case 'r':
+                            newRow=row;newCol=taille-1-i;
+                            break;
+                    }
+
+                    if(update)
+                        //met la Cell qui est dans [row][col] dans la nouvelle position
+                        (selectorRC ? c[getCellIndice(col,row)]->setX(newCol) :
+                            c[getCellIndice(col,row)]->setY(newRow));
+                    t[newRow][newCol]=t[row][col];
+                    t[row][col]=0;
+                }
+               /*
         for (;(inc>0 ? (!selectorRC ? row < taille-1 : col < taille-1)
                : (!selectorRC ? row>0 : col>0));
              (!selectorRC ? row += inc : col += inc))
@@ -270,40 +308,16 @@ bool Gamer::move(int row, int col, bool selectorRC, int inc, bool update){
                 if (t[(selectorRC ? row : row+inc)]
                      [(selectorRC ? col+inc : col)]==0)
                 {
-                    a[ia] = t[row][col];
                     if(update)
                         //met la Cell qui est dans [row][col] dans la nouvelle position
-                        (selectorRC ? c[getCellIndice(col,row)]->setX(ia) : c[getCellIndice(col,row)]->setY(ia));
-                    ia += inc;
+                        (selectorRC ? c[getCellIndice(col,row)]->setX(col+inc) :
+                            c[getCellIndice(col,row)]->setY(row+inc));
                     t[(selectorRC ? row : row+inc)]
                      [(selectorRC ? col+inc : col)]=t[row][col];
                     t[row][col]=0;
-                }
+                }*/
     }
-
-    //Si le mouvement est vers l'haute l'increment sera nagative et donc il faut
-    //changer la condition
-
-    for (; (inc > 0 ? ia < taille : ia >= 0); ia += inc)
-        a[ia] = 0;
-
-    bool diff = false;
-
-    for (; (inc > 0 ? (selectorRC ? colC < taille : rowC < taille) : (selectorRC ? colC >= 0 : rowC >= 0));
-         (selectorRC ? colC += inc : rowC += inc)) {
-
-        if (t[rowC][colC] != a[selectorRC ? colC : rowC]){
-            diff = true;
-
-            if(!update)
-                return diff;
-        }
-
-        if (update)
-            t[rowC][colC] = a[selectorRC ? colC : rowC];
-    }
-
-    return diff;
+    return true;
 }
 
 // fonction qui "merge" les cellules qui sont à coté dans une ligne ou colonne dans une direction
