@@ -16,9 +16,13 @@ public:
     int getX();
     int getY();
     int getVal();
+    bool getBlock();
+
+    void setBlock(bool);
     void setX(int);
     void setY(int);
     void setVal(int);
+
     void refreshPosition();
     void refreshValue();
 
@@ -26,8 +30,6 @@ public:
     void changeMerged(bool);
     bool getMerged2();
     void changeMerged2(bool);
-    bool getUnMerged();
-    void changeUnMerged(bool);
 
      bool getAnimRunning();
 
@@ -36,6 +38,7 @@ private:
     int x; //garde la position x
     int y; // garde la position y
     int value; //garde la valeur
+    bool block;
     vector<int> placement; //garde les coordonées du tableau en fonction de la taille
     bool merged; //true si elle a été mergé et doit être supprimé
     bool merged2; //true si elle a été mergé et doit avoir sa valeur mise à jour

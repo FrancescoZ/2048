@@ -39,7 +39,7 @@ void Gamer::startGame()
 
     deleteCells();
 
-    nextTableau(t2,merged,false,0);
+    nextTableau(t2);
     spawnedCOL.push_back(0);
     spawnedROW.push_back(0);
 
@@ -78,7 +78,7 @@ void Gamer::deleteCells()
 }
 
 // fonction qui va ajouter le nouveau tableau dans les vecteurs qui gardent les pas du jeu
-void Gamer::nextTableau(vector<vector<int> > T, vector<vector<bool> > merged, bool selectorRC, int inc)
+void Gamer::nextTableau(vector<vector<int> > T)
 {
     //si on a fait précedent, et on joue, on supprime toutes les pas postérieures
     if(tableaux.size()>active+1)
@@ -96,18 +96,9 @@ void Gamer::nextTableau(vector<vector<int> > T, vector<vector<bool> > merged, bo
     }
 
     tableaux.push_back(T);
-    scores.push_back(score);
-    vecMerged.push_back(merged);
-    vecInc.push_back(inc);
-    vecRC.push_back(selectorRC);
-    //vérifie le bestScore
-    if(score>bestScore) {
-        bestScore=score;
-        writeBestScore();
-    }
     active++;
     t=tableaux[active];
-    score=scores[active];
+
 }
 
 //fonction qui ajoute une nouvelle Cell au tableau dans la position (j,i) avec la valeur a
@@ -120,7 +111,7 @@ bool Gamer::spawnCell(){
     int i = random_index(taille);;
     int j;
     int a;
-    t = tableaux[active];
+    //t = tableaux[active];
     int stopi = i;
 
     bool spawned = false;
@@ -154,7 +145,7 @@ bool Gamer::spawnCell(){
         i = (i + 1) % taille;
     } while (i != stopi && !spawned);
 
-    tableaux[active]=t;
+    //tableaux[active]=t;
     emit gotIt();
 
     return spawned;
@@ -176,7 +167,7 @@ int Gamer::getCellIndice(int x,int y, bool unMerged)
 {
     for (int i=0; i<c.size(); i++)
     {
-        if(c[i]->getX()==x && c[i]->getY()==y  && (unMerged ? c[i]->getUnMerged() : !c[i]->getUnMerged()) && !c[i]->getMerged())
+        if(c[i]->getX()==x && c[i]->getY()==y && !c[i]->getMerged())
             return i;
     }
     // si la fonction ne trouve pas la Cell correspondant, il y a un problème
@@ -184,191 +175,114 @@ int Gamer::getCellIndice(int x,int y, bool unMerged)
     return -1;
 }
 
+bool Gamer::moveVert( int x, int y, int d , bool ret)
+{
+    if (x<0 || x>=taille || x+d<0 || x+d>=taille)
+        return ret;
+    if (y<0 || y>=taille)
+        return ret;
+    if (t[x][y]==0)
+        return moveVert(x+d,y,d,ret);
+    else if (t[x][y]==t[x+d][y] && !c[getCellIndice(y,x+d)]->getBlock()){
+        //merge
+        t[x+d][y]*=2;
+        t[x][y]=0;
+        c[getCellIndice(y,x+d)]->setVal(t[x+d][y]);
+        c[getCellIndice(y,x+d)]->setBlock(true);
+        c[getCellIndice(y,x+d)]->refreshValue();
+        c[getCellIndice(y,x)]->changeMerged(true);
+        return moveVert(x+d,y,d,true);
+    }
+    else if (t[x+d][y]==0){
+            //mouve
+           c[getCellIndice(y,x)]->setY(x+d);
+           t[x+d][y]=t[x][y];
+           t[x][y]=0;
+           return moveVert(x+d,y,d,true);
+    }
+    else if (moveVert(x+d,y,d,false))
+        return moveVert(x,y,d,true);
+    return ret;
+}
+bool Gamer::moveHor( int x, int y, int d , bool ret)
+{
+    if (x<0 || x>=taille)
+        return ret;
+    if (y<0 || y>=taille|| y+d<0 || y+d>=taille)
+        return ret;
+    if (t[x][y]==0)
+        return moveHor(x,y+d,d,ret);
+    else if (t[x][y]==t[x][y+d] && !c[getCellIndice(y+d,x)]->getBlock()){
+        //merge
+        t[x][y+d]*=2;
+        t[x][y]=0;
+        c[getCellIndice(y+d,x)]->setVal(t[x][y+d]);
+        c[getCellIndice(y+d,x)]->setBlock(true);
+        c[getCellIndice(y+d,x)]->refreshValue();
+        c[getCellIndice(y,x)]->changeMerged(true);
+        return moveHor(x,y+d,d,true);
+    }
+    else if (t[x][y+d]==0){
+            //mouve
+           c[getCellIndice(y,x)]->setX(y+d);
+           t[x][y+d]=t[x][y];
+           t[x][y]=0;
+           return moveHor(x,y+d,d,true);
+    }
+    else if (moveHor(x,y+d,d,false))
+        return moveHor(x,y,d,true);
+    return ret;
+}
 
 bool Gamer::up(){
-    return iterateRC(taille-1, 0, false, -1,true,true);
+    bool move=false;
+    for (int colmn=0;colmn<taille;colmn++)
+        if (moveVert(taille-1,colmn,-1,false))
+            move=true;
+    refresh(move);
+    return true;
 }
 bool Gamer::down(){
-    return iterateRC (0, 0, false, 1);
+    bool move=false;
+    for (int colmn=0;colmn<taille;colmn++)
+        if (moveVert(0,colmn,1,false))
+            move=true;
+    refresh(move);
+    return true;
 }
 bool Gamer::left(){
-    return iterateRC (0, 0, true, -1);
+    bool move=false;
+    for (int rows=0;rows<taille;rows++)
+       if (moveHor(rows,taille-1,-1,false))
+               move=true;
+    refresh(move);
+    return true;
 }
 bool Gamer::right(){
-    return iterateRC (0, 0, true, 1,true,true);
-}
-
-bool Gamer::iterateRC(int row, int col, bool selectorRC, int inc, bool update, bool nTab){
-
-    bool need2spawn = false;
-    bool ret=false;
-    vector<vector<bool> > merged(taille,vector<bool>(taille,false));
-
-    //selectorRC indique si bouger le ligne ou les colons
-
-        ret = move (row, col, selectorRC, inc, update);
-        need2spawn = ret || need2spawn;
-
-
-    //si un mouvement a été fait, on met à jour le tableau
-    if (need2spawn && update)
-    {
-        if(nTab) //si ce n'est pas la fonction redo()
-        {
-            // crée un nouveau tableau mergé, qui indique où il y a eu des fusions
-            for(int i=c.size()-1; i>=0; i--)
-                if(c[i]->getMerged2())
-                {
-                    merged[c[i]->getY()][c[i]->getX()]=true;
-                }
-
-
-            //sauvegarde le prochain tableau
-            nextTableau(t,merged,selectorRC,inc);
-        }
-        //met à jour les positions du tableau QML
-        for(int i=c.size()-1; i>=0; i--)
-            c[i]->refreshPosition();
-
-        //met à jour les valeurs du tableau QML
-        for(int i=c.size()-1; i>=0; i--)
-            if(c[i]->getMerged2())
-            {
-                c[i]->refreshValue();
-                c[i]->changeMerged2(false);
-            }
-
-        //supprime les Cells mergées
-        for(int i=c.size()-1; i>=0; i--)
-            if(c[i]->getMerged())
-            {
-                delete c[i];
-                c.erase(c.begin() + i);
-            }
-
-
-        // crée une nouvelle cellule
-        //if(nTab) spawnCell();
-        // "respawn" la cellule (cas redo())
-        //else spawn(spawnedROW[active],spawnedCOL[active],tableaux[active][spawnedROW[active]][spawnedCOL[active]]);
-
-
-    }
-    // vérifie si il n'y a pas des erreurs (plus utile maintenant)
-    if(update) {
-        showCells();
-    }
-
-    return need2spawn;
-}
-bool Gamer::countcountBox(bool selectorRC,row,col){return true;}
-bool Gamer::move(int row, int col, bool selectorRC, int inc, bool update){
-    int rowC = row;
-    int colC = col;
-
-    //selectorRC indique si je doit scanner les coulons (false=up/down) ou
-    //le ligne (true=left/right)
-    for (; (selectorRC ? row < taille : col < taille);
-         (selectorRC ? row ++ : col ++)){
-        row=(selectorRC ? row : rowC );
-        col=(selectorRC ? colC : col);
-        int nBox=countBox(selectorRC,row,col);
-        for (int i=1;i<=nBox;i++)
-            for (; (!selectorRC ? row < taille-1 : col < taille-1);(!selectorRC ? row += inc : col += inc))
-                if (t[row][col]!=0)
-                {
-                    int newRow=0,newCol=0;
-                    switch(inc){
-                        case 'u':
-                            newCol=col;newRow=i;
-                            break;
-                        case 'd':
-                            newCol=col;newRow=taille-1-i;
-                            break;
-                        case 'l':
-                            newRow=row;newCol=i;
-                            break;
-                        case 'r':
-                            newRow=row;newCol=taille-1-i;
-                            break;
-                    }
-
-                    if(update)
-                        //met la Cell qui est dans [row][col] dans la nouvelle position
-                        (selectorRC ? c[getCellIndice(col,row)]->setX(newCol) :
-                            c[getCellIndice(col,row)]->setY(newRow));
-                    t[newRow][newCol]=t[row][col];
-                    t[row][col]=0;
-                }
-               /*
-        for (;(inc>0 ? (!selectorRC ? row < taille-1 : col < taille-1)
-               : (!selectorRC ? row>0 : col>0));
-             (!selectorRC ? row += inc : col += inc))
-            if (t[row][col]!=0)
-                if (t[(selectorRC ? row : row+inc)]
-                     [(selectorRC ? col+inc : col)]==0)
-                {
-                    if(update)
-                        //met la Cell qui est dans [row][col] dans la nouvelle position
-                        (selectorRC ? c[getCellIndice(col,row)]->setX(col+inc) :
-                            c[getCellIndice(col,row)]->setY(row+inc));
-                    t[(selectorRC ? row : row+inc)]
-                     [(selectorRC ? col+inc : col)]=t[row][col];
-                    t[row][col]=0;
-                }*/
-    }
+    bool move=false;
+    for (int rows=0;rows<taille;rows++)
+        if (moveHor(rows,0,1,false))
+            move=true;
+    refresh(move);
     return true;
 }
 
-// fonction qui "merge" les cellules qui sont à coté dans une ligne ou colonne dans une direction
-bool Gamer::merge(int row, int col, bool selectorRC, int inc, bool update){
-    bool diff = false;
-    for (; (inc > 0 ? (selectorRC ? col < taille-1 : row < taille-1) : (selectorRC ? col > 0 : row > 0));
-         (selectorRC ? col += inc : row += inc))
-        if (t[row][col] == (selectorRC ? t[row][col + inc] : t[row + inc][col] ) && t[row][col]>0){
-            diff = true;
-
-            if (update){
-
-                t[row][col] += t[row][col];
-                score += t[row][col]; //incrément au score
-
-                if (selectorRC)
-                {
-                    t[row][col + inc] = 0;
-
-                    //change les valeurs et prépare les Cells mergés à être supprimés
-
-                    c[getCellIndice(col+inc,row)]->setVal(c[getCellIndice(col+inc,row)]->getVal()*2);
-                    c[getCellIndice(col+inc,row)]->changeMerged2(true);
-
-                    c[getCellIndice(col,row)]->changeMerged(true);
-
-                    c[getCellIndice(col+inc,row)]->setX(col);
-
-                }
-                else
-                {
-                    t[row + inc][col] = 0;
-
-                    //change les valeurs et prépare les Cells mergés à être supprimés
-
-                    c[getCellIndice(col,row+inc)]->setVal(c[getCellIndice(col,row+inc)]->getVal()*2);
-                    c[getCellIndice(col,row+inc)]->changeMerged2(true);
-
-                    c[getCellIndice(col,row)]->changeMerged(true);
-
-
-                    c[getCellIndice(col,row+inc)]->setY(row);
-                }
-            }
-
-            else if (diff && !update)
-                return diff;
+void Gamer::refresh(bool move){
+    //met à jour les positions du tableau QML
+    for(int i=c.size()-1; i>=0; i--){
+        c[i]->refreshPosition();
+        c[i]->setBlock(false);
+    }
+    //supprime les Cells mergées
+    for(int i=c.size()-1; i>=0; i--)
+        if(c[i]->getMerged())
+        {
+            delete c[i];
+            c.erase(c.begin() + i);
         }
-    return diff;
+    if (move)
+        spawnCell();
 }
-
 
 bool Gamer::animRunning()
 {

@@ -26,6 +26,7 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
     x=j;
     y=i;
     value=a;
+    block=false;
 
     object->setProperty("visibilite", true);
     object->setProperty("taille", 424/taille-6);
@@ -47,31 +48,35 @@ int BoxItem::getX()
 {
     return x;
 }
-
 int BoxItem::getY()
 {
     return y;
 }
-
 int BoxItem::getVal()
 {
     return value;
 }
+bool BoxItem::getBlock(){
+    return block;
+}
 
+void BoxItem::setBlock(bool bl){
+    block=bl;
+}
 void BoxItem::setX(int nX)
 {
     x=nX;
 }
-
 void BoxItem::setY(int nY)
 {
     y=nY;
 }
-
 void BoxItem::setVal(int nVal)
 {
-    value=nVal;
+    if (!block)
+        value=nVal;
 }
+
 void BoxItem::refreshPosition()
 {
     object->setProperty("val_x", placement[x]);
@@ -88,12 +93,10 @@ void BoxItem::refreshValue()
 
 }
 
-
 bool BoxItem::getMerged()
 {
     return merged;
 }
-
 void BoxItem::changeMerged(bool a)
 {
     merged=a;
@@ -102,7 +105,6 @@ bool BoxItem::getMerged2()
 {
     return merged2;
 }
-
 void BoxItem::changeMerged2(bool a)
 {
     merged2=a;
@@ -120,12 +122,3 @@ bool BoxItem::getAnimRunning()
 
 }
 
-bool BoxItem::getUnMerged()
-{
-    return unMerged;
-}
-
-void BoxItem::changeUnMerged(bool a)
-{
-    unMerged=a;
-}

@@ -25,7 +25,7 @@ public:
     Gamer( QQmlEngine* machine, QQuickItem* racine,int gridSize);
     ~Gamer();
 
-    void nextTableau(vector<vector<int> > T, vector<vector<bool> > merged, bool selectorRC, int inc);
+    void nextTableau(vector<vector<int> > T);
 
     Q_INVOKABLE void startGame();
     Q_INVOKABLE void setTaille(int){}
@@ -82,7 +82,8 @@ private:
     vector<int> spawnedCOL; //garde la coordonné x de la cellule "spawned" dans chaque pas
 
     int getCellIndice(int x,int y,bool  unMerged=false);
-    bool countcountBox(bool selectorRC,row,col);
+    bool moveVert( int x, int y, int d , bool ret);
+    bool moveHor( int x, int y, int d , bool ret);
     void showCells();
     void undo(){}
     void redo(){}
@@ -92,10 +93,7 @@ private:
     void readBestScore(){}
     void writeBestScore(){}
 
-    bool move(int row, int col, bool selectorRC, int inc, bool update = true);
-    bool merge(int row, int col, bool selectorRC, int inc, bool update = true);
-    bool iterateRC(int row, int col, bool selectorRC, int inc, bool update = true, bool nTab=true);
-
+    void refresh(bool move);
 signals:
     void gotIt();
 
