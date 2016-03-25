@@ -5,12 +5,12 @@ import QtQuick.Dialogs 1.2
 Rectangle {
     visible: true
     width: 500
-    height: 600
+    height: 700
 
     ImageButton{
         id:startGame
-        x: 219
-        y: 14
+        x: 34
+        y: 116
         width: 83
         height: 83
         imageSource:"play.png"
@@ -18,7 +18,7 @@ Rectangle {
             gamer.deleteCells();
             gamer.startGame();
             gameContainer.visibilite=false;
-            //rectangle1.foco=true;
+            header.foco=true;
         }
     }
 
@@ -50,12 +50,12 @@ Rectangle {
                     gamer.right();
                     break;
                 }
-                /* if(gamer.getScore()*1 > 20000 && gamer.getMaxValue() == 2048 && !gamer.getWin())
+               if(gamer.getMaxValue() == 2048 && !gamer.getWin())
                {
                     gameContainer.visibilite=true;
                     gameContainer.texte="Winner\n Keep going?";
                     header.foco=false;
-                }*/
+                }
                 if(!gamer.gameStatus())
                 {
                     gameContainer.visibilite=true;
@@ -82,8 +82,8 @@ Rectangle {
             anchors.fill: parent;
             onClicked:
             {
-                gamerContainer.visibilite=true;
-                gamerContainer.texte="Developped by: \Francesco Zanoli\nMilter Shiniti Pesce";
+                gameContainer.visibilite=true;
+                gameContainer.texte="Developped by: \Francesco Zanoli\nMilter Shiniti Pesce";
 
             }
 
@@ -100,16 +100,35 @@ Rectangle {
             }
         }
 
+        Score {
+            id: score
+            x: 217
+            y: 21
+            width: 118
+            height: 67
+            name: "Score"
+            value: gamer.vScore
+        }
+
+        Score {
+            id: bestScore
+            x: 360
+            y: 21
+            width: 117
+            height: 68
+            name: "Best score"
+            value: gamer.vBestScore
+        }
     }
 
     GridBox {
         id: grid
         height: 450
+        anchors.topMargin: 216
         width: 450
-        anchors.rightMargin: 19
-        anchors.bottomMargin: 23
-        anchors.leftMargin: 22
-        anchors.topMargin: 121
+        anchors.rightMargin: 21
+        anchors.bottomMargin: 27
+        anchors.leftMargin: 21
         col: 4
         row: 4
         objectName: "grid"
@@ -117,16 +136,20 @@ Rectangle {
 
     GameContainer {
         id: gameContainer
-        x: 36
-        y: 134
+        x: 34
+        y: 228
         anchors.leftMargin: -177
         visibilite: false
         texte: "Game Over"
         MouseArea {
             anchors.fill: parent;
             onClicked: {
+                if (parent.texte=="End of Game")
+                    return;
                 parent.visibilite=false;
-                if (gamer.getScore()*1 > 20000 && gamer.getMaxValue() == 2048)gamer.gagnant();
+                header.foco=true;
+                if (gamer.getMaxValue() == 2048)
+                    gamer.gagnant();
             }
         }
 

@@ -32,24 +32,24 @@ public:
     int getTaille();
     Q_INVOKABLE void setGrisSize(int){}
     int getGridSize();
-    Q_INVOKABLE void suivant(){}
-    Q_INVOKABLE void gagnant(){}
-    Q_INVOKABLE bool getWin(){return false;}
+
+    Q_INVOKABLE void gagnant();
+    Q_INVOKABLE bool getWin();
     Q_INVOKABLE void precedent(){}
+    Q_INVOKABLE void suivant(){}
 
     Q_INVOKABLE void saveGame(){}
     Q_INVOKABLE bool loadGame(){return false;}
 
-    Q_INVOKABLE QString getScore(){}
-    Q_INVOKABLE int getMaxValue(){return 8;}
+    Q_INVOKABLE QString getScore();
+    Q_INVOKABLE int getMaxValue();
 
     int random_index(int);
 
-    QString getBestScore(){return "2";}
+    QString getBestScore();
 
     void setActive(int ){}
-    Q_INVOKABLE bool gameStatus(){return true;}
-
+    Q_INVOKABLE bool gameStatus();
     Q_INVOKABLE bool up();
     Q_INVOKABLE bool down();
     Q_INVOKABLE bool left();
@@ -69,6 +69,7 @@ private:
     vector<vector<vector<int> > > tableaux; //garde toutes les pas du jeu
     int active; //garde le tableau active
     bool win; //indique si le 2048 a déjà été formé
+    bool end;
     int taille; //garde la taille du tableau
     int size;//taille de la grid
     int score; // garde le score actuel
@@ -82,16 +83,18 @@ private:
     vector<int> spawnedCOL; //garde la coordonné x de la cellule "spawned" dans chaque pas
 
     int getCellIndice(int x,int y,bool  unMerged=false);
-    bool moveVert( int x, int y, int d , bool ret);
-    bool moveHor( int x, int y, int d , bool ret);
+    void checkLoser();
+    bool moveVert( int x, int y, int d , bool ret,bool update);
+    bool moveHor( int x, int y, int d , bool ret,bool update);
     void showCells();
     void undo(){}
     void redo(){}
     void unmergeCell(int row, int col){}
 
     bool spawnCell();
-    void readBestScore(){}
-    void writeBestScore(){}
+
+    void readBestScore();
+    void writeBestScore();
 
     void refresh(bool move);
 signals:

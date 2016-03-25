@@ -6,5 +6,6 @@
         <file>GameContainer.qml</file>
         <file>ImageButton.qml</file>
         <file>GridBox.qml</file>
+        <file>Score.qml</file>
     </qresource>
 </RCC>

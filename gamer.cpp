@@ -8,10 +8,10 @@ Gamer::Gamer(QQmlEngine *machine, QQuickItem *racine,int gridSize )
     size=gridSize;
 
     taille=4; //taille du Gamer par default
+    readBestScore();
     startGame();
 
 }
-
 //gestion de la mémoire dynamique
 Gamer::~Gamer()
 {
@@ -36,7 +36,7 @@ void Gamer::startGame()
     active=-1;
     score=0;
     win=false;
-
+    end=false;
     deleteCells();
 
     nextTableau(t2);
@@ -53,6 +53,12 @@ void Gamer::startGame()
 
 }
 
+void Gamer::gagnant(){
+    win=true;
+}
+bool Gamer::getWin(){
+    return win;
+}
 int Gamer::getTaille()
 {
     return taille;
@@ -60,6 +66,44 @@ int Gamer::getTaille()
 int Gamer::getGridSize(){
     return size;
 }
+int Gamer::getMaxValue()
+{
+    int max=0;
+    for(int i=0;i<taille;i++)
+        for(int j=0;j<taille;j++)
+            if(t[i][j]>max)
+                max=t[i][j];
+    return max;
+}
+QString Gamer::getScore(){
+    return QString::number(score);
+}
+QString Gamer::getBestScore(){
+    if(score>bestScore) {
+        bestScore=score;
+        writeBestScore();
+    }
+    return QString::number(bestScore);
+}
+
+void Gamer::writeBestScore()
+ {
+    QSettings settings("Zanoli&Pesce", "2048 v1.0");
+
+    settings.beginGroup("ScoreBoard");
+    settings.setValue("bestScore", getBestScore());
+    settings.endGroup();
+}
+void Gamer::readBestScore()
+ {
+    QSettings settings("Zanoli&Pesce", "2048 v1.0");
+
+    settings.beginGroup("ScoreBoard");
+    bestScore=settings.value("bestScore").toInt();
+    settings.endGroup();
+}
+
+
 int Gamer::random_index(int x)
 {
     int index;
@@ -155,12 +199,13 @@ void Gamer::showCells()
     int count=0;
     for (int i=0; i<taille; i++)
         for(int j=0; j<taille; j++)
-            if(tableaux[active][i][j]!=0) count++;
+            if(t[i][j]!=0) count++;
 
     // si les quantités de cellules dans le moteur du jeu
     // et dans le tableau QML ne sont pas les mêmes
     // il y a un erreur
-    if(c.size()!=count) qDebug()<<"error";
+    if(c.size()!=count)
+        qDebug()<<"error";
 
 }
 int Gamer::getCellIndice(int x,int y, bool unMerged)
@@ -175,99 +220,152 @@ int Gamer::getCellIndice(int x,int y, bool unMerged)
     return -1;
 }
 
-bool Gamer::moveVert( int x, int y, int d , bool ret)
+void Gamer::checkLoser(){
+    vector<vector<int> > copy=t;
+    for (int colmn=0;colmn<taille;colmn++)
+        if (moveVert(taille-1,colmn,-1,false,false)){
+            t=copy;
+            return;
+        }
+    for (int colmn=0;colmn<taille;colmn++)
+        if (moveVert(0,colmn,1,false,false)){
+            t=copy;
+            return;
+        }
+    for (int rows=0;rows<taille;rows++)
+       if (moveHor(rows,taille-1,-1,false,false)){
+           t=copy;
+           return;
+       }
+    for (int rows=0;rows<taille;rows++)
+        if (moveHor(rows,0,1,false,false)){
+            t=copy;
+            return;
+        }
+    end=true;
+
+}
+
+bool Gamer::moveVert( int x, int y, int d , bool ret,bool update)
 {
     if (x<0 || x>=taille || x+d<0 || x+d>=taille)
         return ret;
     if (y<0 || y>=taille)
         return ret;
     if (t[x][y]==0)
-        return moveVert(x+d,y,d,ret);
-    else if (t[x][y]==t[x+d][y] && !c[getCellIndice(y,x+d)]->getBlock()){
+        return moveVert(x+d,y,d,ret,update);
+    moveVert(x+d,y,d,ret,update);
+    if (t[x][y]==t[x+d][y] && (update ? (!c[getCellIndice(y,x+d)]->getBlock() && !c[getCellIndice(y,x)]->getBlock()) :
+    true)){
         //merge
         t[x+d][y]*=2;
         t[x][y]=0;
-        c[getCellIndice(y,x+d)]->setVal(t[x+d][y]);
-        c[getCellIndice(y,x+d)]->setBlock(true);
-        c[getCellIndice(y,x+d)]->refreshValue();
-        c[getCellIndice(y,x)]->changeMerged(true);
-        return moveVert(x+d,y,d,true);
+        if (update){
+            c[getCellIndice(y,x+d)]->setVal(t[x+d][y]);
+            c[getCellIndice(y,x+d)]->setBlock(true);
+            c[getCellIndice(y,x+d)]->refreshValue();
+            c[getCellIndice(y,x)]->changeMerged(true);
+        }
+        return moveVert(x+d,y,d,true,update);
     }
     else if (t[x+d][y]==0){
             //mouve
+        t[x+d][y]=t[x][y];
+        t[x][y]=0;
+        if (update){
            c[getCellIndice(y,x)]->setY(x+d);
-           t[x+d][y]=t[x][y];
-           t[x][y]=0;
-           return moveVert(x+d,y,d,true);
+        }
+           return moveVert(x+d,y,d,true,update);
     }
-    else if (moveVert(x+d,y,d,false))
-        return moveVert(x,y,d,true);
+    else if (moveVert(x+d,y,d,false,update))
+        return moveVert(x,y,d,true,update);
     return ret;
 }
-bool Gamer::moveHor( int x, int y, int d , bool ret)
+bool Gamer::moveHor( int x, int y, int d , bool ret,bool update)
 {
     if (x<0 || x>=taille)
         return ret;
     if (y<0 || y>=taille|| y+d<0 || y+d>=taille)
         return ret;
     if (t[x][y]==0)
-        return moveHor(x,y+d,d,ret);
-    else if (t[x][y]==t[x][y+d] && !c[getCellIndice(y+d,x)]->getBlock()){
+        return moveHor(x,y+d,d,ret,update);
+    moveHor(x,y+d,d,ret,update);
+    if (t[x][y]==t[x][y+d] && (update ? (!c[getCellIndice(y+d,x)]->getBlock() && !c[getCellIndice(y,x)]->getBlock()) :
+    true)){
         //merge
         t[x][y+d]*=2;
         t[x][y]=0;
-        c[getCellIndice(y+d,x)]->setVal(t[x][y+d]);
-        c[getCellIndice(y+d,x)]->setBlock(true);
-        c[getCellIndice(y+d,x)]->refreshValue();
-        c[getCellIndice(y,x)]->changeMerged(true);
-        return moveHor(x,y+d,d,true);
+        if (update){           
+            c[getCellIndice(y+d,x)]->setVal(t[x][y+d]);
+            c[getCellIndice(y+d,x)]->setBlock(true);
+            c[getCellIndice(y+d,x)]->refreshValue();
+            c[getCellIndice(y,x)]->changeMerged(true);
+        }
+        return moveHor(x,y+d,d,true,update);
     }
     else if (t[x][y+d]==0){
             //mouve
+        t[x][y+d]=t[x][y];
+        t[x][y]=0;
+        if (update){
            c[getCellIndice(y,x)]->setX(y+d);
-           t[x][y+d]=t[x][y];
-           t[x][y]=0;
-           return moveHor(x,y+d,d,true);
+
+        }
+        return moveHor(x,y+d,d,true,update);
     }
-    else if (moveHor(x,y+d,d,false))
-        return moveHor(x,y,d,true);
+    else if (moveHor(x,y+d,d,false,update))
+        return moveHor(x,y,d,true,update);
     return ret;
 }
 
 bool Gamer::up(){
     bool move=false;
     for (int colmn=0;colmn<taille;colmn++)
-        if (moveVert(taille-1,colmn,-1,false))
+        if (moveVert(taille-1,colmn,-1,false,true))
             move=true;
+    if (!move)
+        checkLoser();
     refresh(move);
     return true;
 }
 bool Gamer::down(){
     bool move=false;
     for (int colmn=0;colmn<taille;colmn++)
-        if (moveVert(0,colmn,1,false))
+        if (moveVert(0,colmn,1,false,true))
             move=true;
+    if (!move)
+        checkLoser();
     refresh(move);
     return true;
 }
 bool Gamer::left(){
     bool move=false;
     for (int rows=0;rows<taille;rows++)
-       if (moveHor(rows,taille-1,-1,false))
+       if (moveHor(rows,taille-1,-1,false,true))
                move=true;
+    if (!move)
+        checkLoser();
     refresh(move);
     return true;
 }
 bool Gamer::right(){
     bool move=false;
     for (int rows=0;rows<taille;rows++)
-        if (moveHor(rows,0,1,false))
+        if (moveHor(rows,0,1,false,true))
             move=true;
+    if (!move)
+        checkLoser();
+
     refresh(move);
     return true;
 }
 
+bool Gamer::gameStatus(){
+    return !end;
+}
+
 void Gamer::refresh(bool move){
+    score=getMaxValue();
     //met à jour les positions du tableau QML
     for(int i=c.size()-1; i>=0; i--){
         c[i]->refreshPosition();
