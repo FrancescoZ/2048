@@ -112,7 +112,7 @@ void Gamer::deleteCells()
     {
         delete c[i-1];
     }
-    c.clear();
+        c.clear();
 }
 
 //fonction qui ajoute une nouvelle Cell au tableau dans la position (j,i) avec la valeur a
@@ -313,6 +313,20 @@ bool Gamer::right(){
     return true;
 }
 
+void Gamer::undo(){
+    t=history[--active];
+    deleteCells();
+    for (int i=0; i<taille; i++)
+        for(int j=0; j<taille; j++)
+            if(t[i][j]!=0)
+                spawn(i,j,t[i][j]);
+
+}
+void Gamer::nextTable(vector<vector<int> > T){
+    history.push_back(T);
+    active++;
+}
+
 bool Gamer::gameStatus(){
     return !end;
 }
@@ -331,8 +345,10 @@ void Gamer::refresh(bool move){
             delete c[i];
             c.erase(c.begin() + i);
         }
-    if (move)
+    if (move){
+        nextTable(t);
         spawnCell();
+    }
 }
 
 bool Gamer::animRunning()

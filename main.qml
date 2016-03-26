@@ -15,10 +15,23 @@ Rectangle {
         height: 83
         imageSource:"play.png"
         onClicked: {
-            gamer.deleteCells();
+
             gamer.startGame();
             gameContainer.visibilite=false;
             header.foco=true;
+        }
+    }
+
+    ImageButton {
+        id: undo
+        x: 137
+        y: 127
+        width: 61
+        height: 62
+        imageSource: "back.png"
+        onClicked: {
+            if (gamer.gameStatus())
+                gamer.undo();
         }
     }
 
@@ -157,6 +170,8 @@ Rectangle {
 
 
     }
+
+
 }
 
 

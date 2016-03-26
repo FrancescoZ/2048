@@ -25,7 +25,7 @@ public:
     Gamer( QQmlEngine* machine, QQuickItem* racine,int gridSize);
     ~Gamer();
 
-    void nextTableau(vector<vector<int> > T);
+    void nextTable(vector<vector<int> > T);
 
     Q_INVOKABLE void startGame();
     Q_INVOKABLE void setTaille(int);
@@ -49,6 +49,8 @@ public:
     Q_INVOKABLE bool left();
     Q_INVOKABLE bool right();
     Q_INVOKABLE void deleteCells();
+
+    Q_INVOKABLE void undo();
 
     Q_INVOKABLE bool animRunning();
 

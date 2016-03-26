@@ -6,8 +6,6 @@
 #include <QtCore>
 #include <QtGui>
 
-
-
 #include "gamer.h"
 
 int main(int argc, char *argv[])
