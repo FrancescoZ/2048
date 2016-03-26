@@ -28,18 +28,12 @@ public:
     void nextTableau(vector<vector<int> > T);
 
     Q_INVOKABLE void startGame();
-    Q_INVOKABLE void setTaille(int){}
+    Q_INVOKABLE void setTaille(int);
     int getTaille();
-    Q_INVOKABLE void setGrisSize(int){}
     int getGridSize();
 
-    Q_INVOKABLE void gagnant();
+    Q_INVOKABLE void keepWin();
     Q_INVOKABLE bool getWin();
-    Q_INVOKABLE void precedent(){}
-    Q_INVOKABLE void suivant(){}
-
-    Q_INVOKABLE void saveGame(){}
-    Q_INVOKABLE bool loadGame(){return false;}
 
     Q_INVOKABLE QString getScore();
     Q_INVOKABLE int getMaxValue();
@@ -48,7 +42,7 @@ public:
 
     QString getBestScore();
 
-    void setActive(int ){}
+
     Q_INVOKABLE bool gameStatus();
     Q_INVOKABLE bool up();
     Q_INVOKABLE bool down();
@@ -66,7 +60,10 @@ private:
 
     vector <BoxItem*> c; //garde les cellules qui sont sur le tableau
 
-    vector<vector<vector<int> > > tableaux; //garde toutes les pas du jeu
+    vector<vector<vector<int> > > history; //garde toutes les pas du jeu
+    vector<vector<int> > t; //tableau avec les pas actuels
+    vector<int> scores; //vecteur avec les score à chaque pas
+
     int active; //garde le tableau active
     bool win; //indique si le 2048 a déjà été formé
     bool end;
@@ -74,22 +71,12 @@ private:
     int size;//taille de la grid
     int score; // garde le score actuel
     int bestScore; //garde le best Score
-    vector<int> scores; //vecteur avec les score à chaque pas
-    vector<vector<int> > t; //tableau avec les pas actuels
-    vector<vector<vector<bool> > > vecMerged; //garde les emplacements où il y a eu des "merges" à chaque pas
-    vector<int> vecInc; //garde la direction du pas
-    vector<bool> vecRC; //garde si c'est colonne ou ligne
-    vector<int> spawnedROW; //garde la coordonné y de la cellule "spawned" dans chaque pas
-    vector<int> spawnedCOL; //garde la coordonné x de la cellule "spawned" dans chaque pas
 
     int getCellIndice(int x,int y,bool  unMerged=false);
     void checkLoser();
     bool moveVert( int x, int y, int d , bool ret,bool update);
     bool moveHor( int x, int y, int d , bool ret,bool update);
     void showCells();
-    void undo(){}
-    void redo(){}
-    void unmergeCell(int row, int col){}
 
     bool spawnCell();
 

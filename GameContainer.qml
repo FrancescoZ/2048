@@ -4,6 +4,7 @@ Rectangle {
 
     property bool visibilite
     property string texte
+    property int fontSize: 51
 
     id: rectangle1
     width: 433
@@ -30,7 +31,7 @@ Rectangle {
         textFormat: Text.PlainText
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 51
+        font.pixelSize: fontSize
     }
 
 

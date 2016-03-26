@@ -83,6 +83,7 @@ Rectangle {
             onClicked:
             {
                 gameContainer.visibilite=true;
+                gameContainer.fontSize=20;
                 gameContainer.texte="Developped by: \Francesco Zanoli\nMilter Shiniti Pesce";
 
             }
@@ -146,10 +147,11 @@ Rectangle {
             onClicked: {
                 if (parent.texte=="End of Game")
                     return;
+                parent.fontSize=51;
                 parent.visibilite=false;
                 header.foco=true;
                 if (gamer.getMaxValue() == 2048)
-                    gamer.gagnant();
+                    gamer.keepWin();
             }
         }
 

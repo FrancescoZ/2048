@@ -24,28 +24,16 @@ Gamer::~Gamer()
 void Gamer::startGame()
 {
     vector<vector<int> > t2(taille,vector<int>(taille,0));
-    vector<vector<bool> >  merged(taille,vector<bool>(taille,false));
-
-    tableaux.clear();
-    vecMerged.clear();
-    vecInc.clear();
-    vecRC.clear();
+    history.clear();
     scores.clear();
-    spawnedCOL.clear();
-    spawnedROW.clear();
-    active=-1;
+    active=0;
     score=0;
     win=false;
     end=false;
     deleteCells();
-
-    nextTableau(t2);
-    spawnedCOL.push_back(0);
-    spawnedROW.push_back(0);
-
+    t=t2;
 
     spawnCell();
-
     spawnCell();
 
     qDebug()<<"new game";
@@ -53,7 +41,7 @@ void Gamer::startGame()
 
 }
 
-void Gamer::gagnant(){
+void Gamer::keepWin(){
     win=true;
 }
 bool Gamer::getWin(){
@@ -103,6 +91,12 @@ void Gamer::readBestScore()
     settings.endGroup();
 }
 
+// change la taille du tableau et commence un nouveau jeu
+void Gamer::setTaille(int tail)
+{
+    taille=tail;
+    startGame();
+}
 
 int Gamer::random_index(int x)
 {
@@ -121,30 +115,6 @@ void Gamer::deleteCells()
     c.clear();
 }
 
-// fonction qui va ajouter le nouveau tableau dans les vecteurs qui gardent les pas du jeu
-void Gamer::nextTableau(vector<vector<int> > T)
-{
-    //si on a fait précedent, et on joue, on supprime toutes les pas postérieures
-    if(tableaux.size()>active+1)
-    {
-        int tamanho=tableaux.size()-(active+1);
-        for( int i=0; i<tamanho ; i++){
-            tableaux.pop_back();
-            scores.pop_back();
-            vecInc.pop_back();
-            vecMerged.pop_back();
-            vecRC.pop_back();
-            spawnedCOL.pop_back();
-            spawnedROW.pop_back();
-        }
-    }
-
-    tableaux.push_back(T);
-    active++;
-    t=tableaux[active];
-
-}
-
 //fonction qui ajoute une nouvelle Cell au tableau dans la position (j,i) avec la valeur a
 void Gamer::spawn(int i, int j, int a)
 {
@@ -155,43 +125,26 @@ bool Gamer::spawnCell(){
     int i = random_index(taille);;
     int j;
     int a;
-    //t = tableaux[active];
     int stopi = i;
-
     bool spawned = false;
-
     do {
         j = random_index(taille);
         int stopj = j;
-
         do {
             if (t[i][j] == 0){
-
-                if(rand()%100<90){
-                a=2;}
-                else {a=4;}
+                if(rand()%100<90)
+                    a=2;
+                else
+                    a=4;
                 t[i][j]=a;
-
-                if(active>0)
-                {
-                    spawnedCOL.push_back(j);
-                    spawnedROW.push_back(i);
-                }
-
                 spawn(i,j,a); //ajoute une nouvelle Cell dans le tableau QML
-
                 spawned = true;
             }
-
             j = (j + 1) % taille;
         } while (j != stopj && !spawned);
-
         i = (i + 1) % taille;
     } while (i != stopi && !spawned);
-
-    //tableaux[active]=t;
     emit gotIt();
-
     return spawned;
 }
 void Gamer::showCells()
