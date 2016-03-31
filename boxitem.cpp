@@ -33,12 +33,17 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
     merged=false;
     merged2=false;
     unMerged=false;
-}
 
+    xAni= object->findChild<QObject*>("xAni");
+    yAni= object->findChild<QObject*>("yAni");
+    hAni= object->findChild<QObject*>("hAni");
+    wAni= object->findChild<QObject*>("wAni");
+}
 BoxItem::~BoxItem()
 {
     destroy();
 }
+
 void BoxItem::destroy()
 {
     delete object;
@@ -112,13 +117,10 @@ void BoxItem::changeMerged2(bool a)
 
 bool BoxItem::getAnimRunning()
 {
-
-    /*if(hAni!=NULL && hAni->property("running").toBool()) return true;
+    if(hAni!=NULL && hAni->property("running").toBool()) return true;
     if(wAni!=NULL && wAni->property("running").toBool()) return true;
     if(xAni!=NULL && xAni->property("running").toBool()) return true;
     if(yAni!=NULL && yAni->property("running").toBool()) return true;
-*/
     return false;
-
 }
 
