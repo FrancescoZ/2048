@@ -273,6 +273,7 @@ bool Gamer::moveHor( int x, int y, int d , bool ret,bool update)
 
 bool Gamer::up(){
     bool move=false;
+    nextTable(t);
     for (int colmn=0;colmn<taille;colmn++)
         if (moveVert(taille-1,colmn,-1,false,true))
             move=true;
@@ -283,6 +284,7 @@ bool Gamer::up(){
 }
 bool Gamer::down(){
     bool move=false;
+    nextTable(t);
     for (int colmn=0;colmn<taille;colmn++)
         if (moveVert(0,colmn,1,false,true))
             move=true;
@@ -293,6 +295,7 @@ bool Gamer::down(){
 }
 bool Gamer::left(){
     bool move=false;
+    nextTable(t);
     for (int rows=0;rows<taille;rows++)
        if (moveHor(rows,taille-1,-1,false,true))
                move=true;
@@ -303,6 +306,7 @@ bool Gamer::left(){
 }
 bool Gamer::right(){
     bool move=false;
+    nextTable(t);
     for (int rows=0;rows<taille;rows++)
         if (moveHor(rows,0,1,false,true))
             move=true;
@@ -314,6 +318,8 @@ bool Gamer::right(){
 }
 
 void Gamer::undo(){
+    if (active-1<0)
+        return;
     t=history[--active];
     deleteCells();
     for (int i=0; i<taille; i++)
@@ -345,10 +351,9 @@ void Gamer::refresh(bool move){
             delete c[i];
             c.erase(c.begin() + i);
         }
-    if (move){
-        nextTable(t);
+    if (move)
         spawnCell();
-    }
+
 }
 
 bool Gamer::animRunning()
