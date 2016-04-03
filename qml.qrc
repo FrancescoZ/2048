@@ -8,5 +8,7 @@
         <file>GridBox.qml</file>
         <file>Score.qml</file>
         <file>back.png</file>
+        <file>save.jpg</file>
+        <file>open.png</file>
     </qresource>
 </RCC>

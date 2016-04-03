@@ -25,7 +25,6 @@ void Gamer::startGame()
 {
     vector<vector<int> > t2(taille,vector<int>(taille,0));
     history.clear();
-    scores.clear();
     active=0;
     score=0;
     win=false;
@@ -321,6 +320,7 @@ void Gamer::undo(){
     if (active-1<0)
         return;
     t=history[--active];
+    history.pop_back();
     deleteCells();
     for (int i=0; i<taille; i++)
         for(int j=0; j<taille; j++)
@@ -362,4 +362,73 @@ bool Gamer::animRunning()
         if(c[i]->getAnimRunning())
             return true;
     return false;
+}
+
+//fonction qui sauvegarde le jeu dans un fichier .txt
+void Gamer::saveGame(){
+    std::ofstream boards;
+    boards.open ("qt_sav.qm");
+    boards << history.size() << " "<<taille <<" " <<active<<" "<<win<<" ";
+    boards<<"\r\n"<<"\r\n"<<"\r\n";
+    for(uint i=0; i<history.size(); i++)
+    {
+
+        for(uint j=0; j<history[i].size(); j++)
+        {
+            for(uint k=0; k<history[i][j].size(); k++)
+            {
+                boards << history[i][j][k];
+            }
+            boards << "\r\n";
+
+        }
+    }
+    boards.close();
+    qDebug()<<"Saved";
+}
+
+//charge un jeu ancien
+bool Gamer::loadGame()
+{
+    std::ifstream boards;
+    boards.open ("qt_sav.qm");
+
+    if(!boards.good()){ //si on a jamais sauvegardé un jeu, return false
+        return false;
+    }
+
+    int nTableaux;
+    t.clear();
+
+    deleteCells();
+
+    boards >> nTableaux;
+    boards >> taille;
+    boards >> active;
+    boards >> win;
+    vector<vector<int> > t2(taille,vector<int>(taille,0));
+
+    for(int i=0; i<nTableaux; i++)
+    {
+        for(int j=0; j<taille; j++)
+        {
+            for(int k=0; k<taille; k++)
+            {
+                boards >> t2[j][k];
+            }
+        }
+        history.push_back(t2);
+    }
+    boards.close();
+
+    t=history[active];
+    score=getMaxValue();
+
+    for(int i=0; i<taille; i++)
+        for(int j=0; j<taille; j++)
+            if(history[active][i][j] != 0)
+                spawn(i,j,history[active][i][j]);
+
+    emit gotIt();
+    return true;
 }

@@ -42,6 +42,8 @@ public:
 
     QString getBestScore();
 
+    Q_INVOKABLE void saveGame();
+    Q_INVOKABLE bool loadGame();
 
     Q_INVOKABLE bool gameStatus();
     Q_INVOKABLE bool up();
@@ -64,7 +66,6 @@ private:
 
     vector<vector<vector<int> > > history; //garde toutes les pas du jeu
     vector<vector<int> > t; //tableau avec les pas actuels
-    vector<int> scores; //vecteur avec les score à chaque pas
 
     int active; //garde le tableau active
     bool win; //indique si le 2048 a déjà été formé
