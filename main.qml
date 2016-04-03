@@ -74,6 +74,8 @@ Rectangle {
         focus: foco
 
         Keys.onPressed: {
+            if(!gamer.animRunning())
+            {
                 switch (event.key){
                 case Qt.Key_Up:
                     gamer.up();
@@ -101,6 +103,7 @@ Rectangle {
                     header.foco=false;
 
                 }
+            }
         }
 
         Text {

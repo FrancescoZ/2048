@@ -148,7 +148,7 @@ bool Gamer::spawnCell(){
 }
 void Gamer::showCells()
 {
-    int count=0;
+    uint count=0;
     for (int i=0; i<taille; i++)
         for(int j=0; j<taille; j++)
             if(t[i][j]!=0) count++;
@@ -160,9 +160,9 @@ void Gamer::showCells()
         qDebug()<<"error";
 
 }
-int Gamer::getCellIndice(int x,int y, bool unMerged)
+int Gamer::getCellIndice(int x,int y)
 {
-    for (int i=0; i<c.size(); i++)
+    for (uint i=0; i<c.size(); i++)
     {
         if(c[i]->getX()==x && c[i]->getY()==y && !c[i]->getMerged())
             return i;

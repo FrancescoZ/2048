@@ -75,7 +75,7 @@ private:
     int score; // garde le score actuel
     int bestScore; //garde le best Score
 
-    int getCellIndice(int x,int y,bool  unMerged=false);
+    int getCellIndice(int x,int y);
     void checkLoser();
     bool moveVert( int x, int y, int d , bool ret,bool update);
     bool moveHor( int x, int y, int d , bool ret,bool update);

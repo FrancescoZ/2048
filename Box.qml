@@ -89,6 +89,12 @@ Item {
                 font.family: "Tahoma"
                 font.pixelSize: 45*size/100
             }
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 300
+                }
+            }
         }
 
 
@@ -96,7 +102,7 @@ Item {
             enabled: animResizeEnable;
             NumberAnimation {
                 objectName: "wAni";
-                duration: 100;
+                duration: 300;
 
             }
         }
@@ -106,29 +112,29 @@ Item {
 
             NumberAnimation {
                 objectName: "hAni";
-                duration: 100;
+                duration: 300;
+
+            }
+        }
+
+        Behavior on x {
+            enabled: animMoveEnable
+            objectName: "xmove"
+            NumberAnimation {
+                objectName: "xAni";
+                duration: 200;
+
+            }
+        }
+
+        Behavior on y {
+            enabled: animMoveEnable
+            objectName: "ymove"
+            NumberAnimation {
+                objectName: "yAni";
+                duration: 200;
 
             }
         }
     }
-    Behavior on x {
-        enabled: animMoveEnable
-        objectName: "xmove"
-        NumberAnimation {
-            objectName: "xAni";
-            duration: 100;
-
-        }
-    }
-
-    Behavior on y {
-        enabled: animMoveEnable
-        objectName: "ymove"
-        NumberAnimation {
-            objectName: "yAni";
-            duration: 100;
-
-        }
-    }
-
 }

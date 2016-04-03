@@ -28,8 +28,6 @@ public:
 
     bool getMerged();
     void changeMerged(bool);
-    bool getMerged2();
-    void changeMerged2(bool);
 
      bool getAnimRunning();
 
@@ -41,8 +39,6 @@ private:
     bool block;
     vector<int> placement; //garde les coordonées du tableau en fonction de la taille
     bool merged; //true si elle a été mergé et doit être supprimé
-    bool merged2; //true si elle a été mergé et doit avoir sa valeur mise à jour
-    bool unMerged; //true si elle vient d'être "unmergé"
     int taille; //taille du tableau
 
     // garde les animations
