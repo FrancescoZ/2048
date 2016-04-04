@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>Box.qml</file>
-        <file>play.png</file>
         <file>GameContainer.qml</file>
         <file>ImageButton.qml</file>
         <file>GridBox.qml</file>
@@ -10,5 +9,6 @@
         <file>back.png</file>
         <file>save.jpg</file>
         <file>open.png</file>
+        <file>play.jpg</file>
     </qresource>
 </RCC>

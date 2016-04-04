@@ -9,11 +9,8 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
 
     //on garde la box caché jusqu'à que elle est prete
     object->setProperty("visibilite", false);
-<<<<<<< HEAD
     object->setProperty("opacity",0);
-=======
-    object->setProperty("opacity", 0);
->>>>>>> save
+
     object->setParentItem(racine->findChild<QQuickItem*>("grid"));
 
     //on cree un vector avec la position d'un box par rapport a la grille, comme ça et ho

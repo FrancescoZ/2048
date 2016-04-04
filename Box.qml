@@ -105,11 +105,7 @@ Item {
             enabled: animResizeEnable;
             NumberAnimation {
                 objectName: "wAni";
-<<<<<<< HEAD
-                duration: 1000;
-=======
                 duration: 100;
->>>>>>> 803ce1c82bd9e50fbdc72f56ab84c03a998aeae0
 
             }
         }
@@ -119,11 +115,7 @@ Item {
 
             NumberAnimation {
                 objectName: "hAni";
-<<<<<<< HEAD
-                duration: 1000;
-=======
                 duration: 100;
->>>>>>> 803ce1c82bd9e50fbdc72f56ab84c03a998aeae0
 
             }
         }
