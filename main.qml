@@ -24,7 +24,7 @@ Rectangle {
 
     ImageButton {
         id: undo
-        x: 137
+        x: 123
         y: 127
         width: 61
         height: 62
@@ -37,7 +37,7 @@ Rectangle {
 
     ImageButton {
         id: save
-        x: 227
+        x: 203
         y: 127
         width: 61
         height: 62
@@ -49,7 +49,7 @@ Rectangle {
     }
     ImageButton {
         id: open
-        x: 319
+        x: 270
         y: 127
         width: 61
         height: 62
@@ -60,6 +60,29 @@ Rectangle {
         }
     }
 
+    ImageButton {
+        id: plus
+        x: 418
+        y: 127
+        width: 61
+        height: 62
+        imageSource: "plus.png"
+        onClicked: {
+           gamer.setTaille(gamer.getTaille+1);
+        }
+    }
+
+    ImageButton {
+        id: moin
+        x: 351
+        y: 148
+        width: 61
+        height: 19
+        imageSource: "minus.jpg"
+        onClicked: {
+           gamer.setTaille(gamer.getTaille-1);
+        }
+    }
     Rectangle {
         id: header
         x: 5
@@ -171,8 +194,8 @@ Rectangle {
         anchors.rightMargin: 21
         anchors.bottomMargin: 27
         anchors.leftMargin: 21
-        col: 4
-        row: 4
+        col: gamer.getTaille
+        row: gamer.getTaille
         objectName: "grid"
     }
 

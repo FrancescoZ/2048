@@ -69,6 +69,7 @@ private:
     vector <BoxItem*> c; //garde les cellules qui sont sur le tableau
 
     vector<vector<vector<int> > > history; //garde toutes les pas du jeu
+    vector<int> scoreHistory;
     vector<vector<int> > t; //tableau avec les pas actuels
 
     int active; //garde le tableau active
