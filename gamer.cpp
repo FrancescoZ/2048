@@ -100,8 +100,10 @@ void Gamer::readBestScore()
 // change la taille du tableau et commence un nouveau jeu
 void Gamer::setTaille(int tail)
 {
-    taille=tail;
-    startGame();
+    if (tail>3){
+        taille=tail;
+        startGame();
+    }
 }
 
 int Gamer::random_index(int x)
@@ -329,17 +331,21 @@ void Gamer::undo(){
     if (active-1<0)
         return;
     t=history[--active];
+    score=scoreHistory[--active];
+    scoreHistory.pop_back();
     history.pop_back();
     deleteCells();
     for (int i=0; i<taille; i++)
         for(int j=0; j<taille; j++)
             if(t[i][j]!=0)
                 spawn(i,j,t[i][j]);
+     emit gotIt();
 
 }
 //enregistre l'historique du jeu
 void Gamer::nextTable(vector<vector<int> > T){
     history.push_back(T);
+    scoreHistory.push_back(score);
     active++;
 }
 
@@ -381,7 +387,6 @@ void Gamer::saveGame(){
     nextTable(t);
 
     boards << history.size() << " "<<taille <<" " <<active<<" "<<win<<" ";
-    qDebug()<< history.size() << " "<<taille <<" " <<active<<" "<<win<<" ";
     boards<<"\r\n"<<"\r\n"<<"\r\n";
     for(uint i=0; i<history.size(); i++)
     {
@@ -390,14 +395,14 @@ void Gamer::saveGame(){
         {
             for(uint k=0; k<history[i][j].size(); k++)
             {
-                //if (j==0 && k==0) history[i][j][k]=3;
                 boards << history[i][j][k]<<" ";
-                qDebug()<< history[i][j][k];
             }
             boards << "\r\n";
 
         }
     }
+    for(uint i=0; i<history.size(); i++)
+        boards << scoreHistory[i]<<" ";
     boards.close();
     qDebug()<<"Saved";
 }
@@ -415,33 +420,33 @@ bool Gamer::loadGame()
     int nTableaux;
     t.clear();
     history.clear();
+    scoreHistory.clear();
     deleteCells();
 
     boards >> nTableaux;
     boards >> taille;
     boards >> active;
     boards >> win;
-    qDebug()<< nTableaux << " "<<taille <<" " <<active<<" "<<win<<" ";
 
     vector<vector<int> > t2(taille,vector<int>(taille,0));
 
     for(int i=0; i<nTableaux; i++)
     {
         for(int j=0; j<taille; j++)
-        {
             for(int k=0; k<taille; k++)
-            {
                 boards >> t2[j][k];
-                qDebug()<< t2[j][k];
-
-            }
-        }
         history.push_back(t2);
+    }
+    for(int i=0; i<nTableaux; i++)
+    {
+        int a=0;
+        boards >> a;
+        scoreHistory.push_back(a);
     }
     boards.close();
 
     t=history[active-1];
-    score=getMaxValue();
+    score=scoreHistory[active-1];
 
     for(int i=0; i<taille; i++)
         for(int j=0; j<taille; j++)
