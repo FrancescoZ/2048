@@ -39,6 +39,7 @@ public:
     Q_INVOKABLE bool getWin();
 
     Q_INVOKABLE QString getScore();
+    Q_INVOKABLE void setScore(int a);
     Q_INVOKABLE int getMaxValue();
 
     int random_index(int);
