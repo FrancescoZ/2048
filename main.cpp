@@ -5,6 +5,7 @@
 #include <QtQuick>
 #include <QtCore>
 #include <QtGui>
+#include "time.h"
 
 #include "gamer.h"
 

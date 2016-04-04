@@ -35,6 +35,31 @@ Rectangle {
         }
     }
 
+    ImageButton {
+        id: save
+        x: 227
+        y: 127
+        width: 61
+        height: 62
+        imageSource: "save.jpg"
+        onClicked: {
+            if (gamer.gameStatus())
+                gamer.saveGame();
+        }
+    }
+    ImageButton {
+        id: open
+        x: 319
+        y: 127
+        width: 61
+        height: 62
+        imageSource: "open.png"
+        onClicked: {
+            if (gamer.gameStatus())
+                gamer.loadGame();
+        }
+    }
+
     Rectangle {
         id: header
         x: 5

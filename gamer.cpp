@@ -20,12 +20,12 @@ Gamer::~Gamer()
     //deleteBoxItems();
 }
 
+//commence a new jeu
 // initialize toutes les variables et prépare un nouveau jeu
 void Gamer::startGame()
 {
     vector<vector<int> > t2(taille,vector<int>(taille,0));
     history.clear();
-    scores.clear();
     active=0;
     score=0;
     win=false;
@@ -41,12 +41,14 @@ void Gamer::startGame()
 
 }
 
+//continue a jouer meme si on est arrivé a 2048
 void Gamer::keepWin(){
     win=true;
 }
 bool Gamer::getWin(){
     return win;
 }
+
 int Gamer::getTaille()
 {
     return taille;
@@ -54,6 +56,7 @@ int Gamer::getTaille()
 int Gamer::getGridSize(){
     return size;
 }
+
 int Gamer::getMaxValue()
 {
     int max=0;
@@ -62,6 +65,9 @@ int Gamer::getMaxValue()
             if(t[i][j]>max)
                 max=t[i][j];
     return max;
+}
+void Gamer::setScore(int a){
+    score+=a;
 }
 QString Gamer::getScore(){
     return QString::number(score);
@@ -213,6 +219,7 @@ bool Gamer::moveVert( int x, int y, int d , bool ret,bool update)
         //merge
         t[x+d][y]*=2;
         t[x][y]=0;
+        setScore(t[x+d][y]);
         if (update){
             c[getCellIndice(y,x+d)]->setVal(t[x+d][y]);
             c[getCellIndice(y,x+d)]->setBlock(true);
@@ -248,6 +255,7 @@ bool Gamer::moveHor( int x, int y, int d , bool ret,bool update)
         //merge
         t[x][y+d]*=2;
         t[x][y]=0;
+        setScore(t[x][y+d]);
         if (update){           
             c[getCellIndice(y+d,x)]->setVal(t[x][y+d]);
             c[getCellIndice(y+d,x)]->setBlock(true);
@@ -321,6 +329,7 @@ void Gamer::undo(){
     if (active-1<0)
         return;
     t=history[--active];
+    history.pop_back();
     deleteCells();
     for (int i=0; i<taille; i++)
         for(int j=0; j<taille; j++)
@@ -328,6 +337,7 @@ void Gamer::undo(){
                 spawn(i,j,t[i][j]);
 
 }
+//enregistre l'historique du jeu
 void Gamer::nextTable(vector<vector<int> > T){
     history.push_back(T);
     active++;
@@ -338,7 +348,6 @@ bool Gamer::gameStatus(){
 }
 
 void Gamer::refresh(bool move){
-    score=getMaxValue();
     //met à jour les positions du tableau QML
     for(int i=c.size()-1; i>=0; i--){
         c[i]->refreshPosition();
@@ -362,4 +371,84 @@ bool Gamer::animRunning()
         if(c[i]->getAnimRunning())
             return true;
     return false;
+}
+
+//fonction qui sauvegarde le jeu dans un fichier .txt
+void Gamer::saveGame(){
+    std::ofstream boards;
+    boards.open ("qt_sav.qm");
+
+    nextTable(t);
+
+    boards << history.size() << " "<<taille <<" " <<active<<" "<<win<<" ";
+    qDebug()<< history.size() << " "<<taille <<" " <<active<<" "<<win<<" ";
+    boards<<"\r\n"<<"\r\n"<<"\r\n";
+    for(uint i=0; i<history.size(); i++)
+    {
+
+        for(uint j=0; j<history[i].size(); j++)
+        {
+            for(uint k=0; k<history[i][j].size(); k++)
+            {
+                //if (j==0 && k==0) history[i][j][k]=3;
+                boards << history[i][j][k]<<" ";
+                qDebug()<< history[i][j][k];
+            }
+            boards << "\r\n";
+
+        }
+    }
+    boards.close();
+    qDebug()<<"Saved";
+}
+
+//charge un jeu ancien
+bool Gamer::loadGame()
+{
+    std::ifstream boards;
+    boards.open ("qt_sav.qm");
+
+    if(!boards.good()){ //si on a jamais sauvegardé un jeu, return false
+        return false;
+    }
+
+    int nTableaux;
+    t.clear();
+    history.clear();
+    deleteCells();
+
+    boards >> nTableaux;
+    boards >> taille;
+    boards >> active;
+    boards >> win;
+    qDebug()<< nTableaux << " "<<taille <<" " <<active<<" "<<win<<" ";
+
+    vector<vector<int> > t2(taille,vector<int>(taille,0));
+
+    for(int i=0; i<nTableaux; i++)
+    {
+        for(int j=0; j<taille; j++)
+        {
+            for(int k=0; k<taille; k++)
+            {
+                boards >> t2[j][k];
+                qDebug()<< t2[j][k];
+
+            }
+        }
+        history.push_back(t2);
+    }
+    boards.close();
+
+    t=history[active-1];
+    score=getMaxValue();
+
+    for(int i=0; i<taille; i++)
+        for(int j=0; j<taille; j++)
+            if(history[active-1][i][j] != 0)
+                spawn(i,j,history[active-1][i][j]);
+
+    emit gotIt();
+    qDebug()<<"loaded";
+    return true;
 }

@@ -15,8 +15,10 @@ class Gamer : public QObject
 {
     Q_OBJECT
 
+    //resultat
     Q_PROPERTY(QString vScore READ getScore NOTIFY gotIt)
     Q_PROPERTY(QString vBestScore READ getBestScore NOTIFY gotIt)
+    //dimension
     Q_PROPERTY(int getTaille READ getTaille NOTIFY gotIt)
     Q_PROPERTY(int getGridSize READ getGridSize NOTIFY gotIt)
 
@@ -28,6 +30,7 @@ public:
     void nextTable(vector<vector<int> > T);
 
     Q_INVOKABLE void startGame();
+
     Q_INVOKABLE void setTaille(int);
     int getTaille();
     int getGridSize();
@@ -36,12 +39,15 @@ public:
     Q_INVOKABLE bool getWin();
 
     Q_INVOKABLE QString getScore();
+    Q_INVOKABLE void setScore(int a);
     Q_INVOKABLE int getMaxValue();
 
     int random_index(int);
 
     QString getBestScore();
 
+    Q_INVOKABLE void saveGame();
+    Q_INVOKABLE bool loadGame();
 
     Q_INVOKABLE bool gameStatus();
     Q_INVOKABLE bool up();
@@ -64,7 +70,6 @@ private:
 
     vector<vector<vector<int> > > history; //garde toutes les pas du jeu
     vector<vector<int> > t; //tableau avec les pas actuels
-    vector<int> scores; //vecteur avec les score à chaque pas
 
     int active; //garde le tableau active
     bool win; //indique si le 2048 a déjà été formé
