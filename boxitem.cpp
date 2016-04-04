@@ -2,16 +2,17 @@
 
 BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, int Size,int gridSize)
 {
+    //L'objet il meme s'occupe de creer se lier à la partie graphic et de s'ajouter à la grille
     QQmlComponent component(machine, QUrl(QStringLiteral("qrc:/Box.qml")));
-
-    //
     object = qobject_cast<QQuickItem*>(component.create());
+    //Initialisation variable et de proprietes:
 
+    //on garde la box caché jusqu'à que elle est prete
     object->setProperty("visibilite", false);
     object->setParentItem(racine->findChild<QQuickItem*>("grid"));
 
+    //on cree un vector avec la position d'un box par rapport a la grille, comme ça et ho
     taille=Size;
-
     for(int k=0; k<taille; k++)
         placement.push_back(8+gridSize*k/taille);
 
@@ -30,6 +31,8 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
 
     object->setProperty("animResizeEnable", true);
     object->setProperty("animMoveEnable", true);
+    object->setProperty("animColorEnable", true);
+
     object->setProperty("visibilite", true);
     object->setProperty("taille", 424/taille-6);
     merged=false;
@@ -38,6 +41,7 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
     yAni= object->findChild<QObject*>("yAni");
     hAni= object->findChild<QObject*>("hAni");
     wAni= object->findChild<QObject*>("wAni");
+    cAni= object->findChild<QObject*>("cAni");
 }
 BoxItem::~BoxItem()
 {

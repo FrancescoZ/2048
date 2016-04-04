@@ -20,6 +20,7 @@ Gamer::~Gamer()
     //deleteBoxItems();
 }
 
+//commence a new jeu
 // initialize toutes les variables et prépare un nouveau jeu
 void Gamer::startGame()
 {
@@ -40,12 +41,14 @@ void Gamer::startGame()
 
 }
 
+//continue a jouer meme si on est arrivé a 2048
 void Gamer::keepWin(){
     win=true;
 }
 bool Gamer::getWin(){
     return win;
 }
+
 int Gamer::getTaille()
 {
     return taille;
@@ -53,6 +56,7 @@ int Gamer::getTaille()
 int Gamer::getGridSize(){
     return size;
 }
+
 int Gamer::getMaxValue()
 {
     int max=0;
@@ -328,6 +332,7 @@ void Gamer::undo(){
                 spawn(i,j,t[i][j]);
 
 }
+//enregistre l'historique du jeu
 void Gamer::nextTable(vector<vector<int> > T){
     history.push_back(T);
     active++;

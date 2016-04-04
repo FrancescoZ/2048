@@ -15,8 +15,10 @@ class Gamer : public QObject
 {
     Q_OBJECT
 
+    //resultat
     Q_PROPERTY(QString vScore READ getScore NOTIFY gotIt)
     Q_PROPERTY(QString vBestScore READ getBestScore NOTIFY gotIt)
+    //dimension
     Q_PROPERTY(int getTaille READ getTaille NOTIFY gotIt)
     Q_PROPERTY(int getGridSize READ getGridSize NOTIFY gotIt)
 
@@ -28,6 +30,7 @@ public:
     void nextTable(vector<vector<int> > T);
 
     Q_INVOKABLE void startGame();
+
     Q_INVOKABLE void setTaille(int);
     int getTaille();
     int getGridSize();

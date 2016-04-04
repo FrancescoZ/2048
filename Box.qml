@@ -7,6 +7,7 @@ Item {
     property int val_y
     property bool animMoveEnable;
     property bool animResizeEnable;
+    property bool aniColorEnabled;
     property bool visibilite: true;
     property int taille: 100;
     property int size: 100;
@@ -91,8 +92,10 @@ Item {
             }
 
             Behavior on color {
+                enabled: aniColorEnabled;
                 ColorAnimation {
-                    duration: 300
+                    objectName: "cAni";
+                    duration: 300;
                 }
             }
         }
