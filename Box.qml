@@ -102,7 +102,7 @@ Item {
             enabled: animResizeEnable;
             NumberAnimation {
                 objectName: "wAni";
-                duration: 300;
+                duration: 1000;
 
             }
         }
@@ -112,7 +112,7 @@ Item {
 
             NumberAnimation {
                 objectName: "hAni";
-                duration: 300;
+                duration: 1000;
 
             }
         }

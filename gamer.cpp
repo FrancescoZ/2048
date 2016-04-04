@@ -368,7 +368,11 @@ bool Gamer::animRunning()
 void Gamer::saveGame(){
     std::ofstream boards;
     boards.open ("qt_sav.qm");
+
+    nextTable(t);
+
     boards << history.size() << " "<<taille <<" " <<active<<" "<<win<<" ";
+    qDebug()<< history.size() << " "<<taille <<" " <<active<<" "<<win<<" ";
     boards<<"\r\n"<<"\r\n"<<"\r\n";
     for(uint i=0; i<history.size(); i++)
     {
@@ -377,7 +381,9 @@ void Gamer::saveGame(){
         {
             for(uint k=0; k<history[i][j].size(); k++)
             {
-                boards << history[i][j][k];
+                //if (j==0 && k==0) history[i][j][k]=3;
+                boards << history[i][j][k]<<" ";
+                qDebug()<< history[i][j][k];
             }
             boards << "\r\n";
 
@@ -399,13 +405,15 @@ bool Gamer::loadGame()
 
     int nTableaux;
     t.clear();
-
+    history.clear();
     deleteCells();
 
     boards >> nTableaux;
     boards >> taille;
     boards >> active;
     boards >> win;
+    qDebug()<< nTableaux << " "<<taille <<" " <<active<<" "<<win<<" ";
+
     vector<vector<int> > t2(taille,vector<int>(taille,0));
 
     for(int i=0; i<nTableaux; i++)
@@ -415,20 +423,23 @@ bool Gamer::loadGame()
             for(int k=0; k<taille; k++)
             {
                 boards >> t2[j][k];
+                qDebug()<< t2[j][k];
+
             }
         }
         history.push_back(t2);
     }
     boards.close();
 
-    t=history[active];
+    t=history[active-1];
     score=getMaxValue();
 
     for(int i=0; i<taille; i++)
         for(int j=0; j<taille; j++)
-            if(history[active][i][j] != 0)
-                spawn(i,j,history[active][i][j]);
+            if(history[active-1][i][j] != 0)
+                spawn(i,j,history[active-1][i][j]);
 
     emit gotIt();
+    qDebug()<<"loaded";
     return true;
 }
