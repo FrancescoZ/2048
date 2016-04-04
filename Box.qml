@@ -116,6 +116,13 @@ Item {
             }
         }
 
+        Behavior on opacity{
+            enabled: animResizeEnable;
+            NumberAnimation{
+                duration:300;
+            }
+        }
+
         Behavior on x {
             enabled: animMoveEnable
             objectName: "xmove"

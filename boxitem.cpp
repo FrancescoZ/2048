@@ -8,6 +8,7 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
     object = qobject_cast<QQuickItem*>(component.create());
 
     object->setProperty("visibilite", false);
+    object->setProperty("opacity",0);
     object->setParentItem(racine->findChild<QQuickItem*>("grid"));
 
     taille=Size;
@@ -15,9 +16,9 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
     for(int k=0; k<taille; k++)
         placement.push_back(8+gridSize*k/taille);
 
+
     object->setProperty("size", gridSize/taille-6);
     object->setProperty("taille", 1);
-
     object->setProperty("val_x", placement[j]);
     object->setProperty("val_y", placement[i]);
 
@@ -32,6 +33,7 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
     object->setProperty("animMoveEnable", true);
     object->setProperty("visibilite", true);
     object->setProperty("taille", 424/taille-6);
+    object->setProperty("opacity",1);
     merged=false;
 
     xAni= object->findChild<QObject*>("xAni");
