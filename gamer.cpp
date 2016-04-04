@@ -54,13 +54,6 @@ int Gamer::getTaille()
 int Gamer::getGridSize(){
     return size;
 }
-void Gamer::setScore(int a)
-{
-    score+=a;
-}
-QString Gamer::getScore(){
-    return QString::number(score);
-}
 int Gamer::getMaxValue()
 {
     int max=0;
@@ -70,6 +63,9 @@ int Gamer::getMaxValue()
                 max=t[i][j];
     return max;
 }
+QString Gamer::getScore(){
+    return QString::number(score);
+}
 QString Gamer::getBestScore(){
     if(score>bestScore) {
         bestScore=score;
@@ -77,7 +73,6 @@ QString Gamer::getBestScore(){
     }
     return QString::number(bestScore);
 }
-
 
 void Gamer::writeBestScore()
  {
@@ -218,7 +213,6 @@ bool Gamer::moveVert( int x, int y, int d , bool ret,bool update)
         //merge
         t[x+d][y]*=2;
         t[x][y]=0;
-        setScore(t[x+d][y]);
         if (update){
             c[getCellIndice(y,x+d)]->setVal(t[x+d][y]);
             c[getCellIndice(y,x+d)]->setBlock(true);
@@ -254,8 +248,7 @@ bool Gamer::moveHor( int x, int y, int d , bool ret,bool update)
         //merge
         t[x][y+d]*=2;
         t[x][y]=0;
-        setScore(t[x][y+d]);
-        if (update){
+        if (update){           
             c[getCellIndice(y+d,x)]->setVal(t[x][y+d]);
             c[getCellIndice(y+d,x)]->setBlock(true);
             c[getCellIndice(y+d,x)]->refreshValue();
@@ -345,6 +338,7 @@ bool Gamer::gameStatus(){
 }
 
 void Gamer::refresh(bool move){
+    score=getMaxValue();
     //met à jour les positions du tableau QML
     for(int i=c.size()-1; i>=0; i--){
         c[i]->refreshPosition();
