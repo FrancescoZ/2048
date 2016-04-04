@@ -13,7 +13,7 @@ Rectangle {
         y: 116
         width: 83
         height: 83
-        imageSource:"play.png"
+        imageSource:"play.jpg"
         onClicked: {
 
             gamer.startGame();
