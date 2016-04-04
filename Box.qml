@@ -105,7 +105,7 @@ Item {
             enabled: animResizeEnable;
             NumberAnimation {
                 objectName: "wAni";
-                duration: 300;
+                duration: 100;
 
             }
         }
@@ -115,7 +115,7 @@ Item {
 
             NumberAnimation {
                 objectName: "hAni";
-                duration: 300;
+                duration: 100;
 
             }
         }
@@ -138,6 +138,13 @@ Item {
                 duration: 200;
 
             }
+        }
+    }
+
+    Behavior on opacity {
+        enabled:animResizeEnable;
+        NumberAnimation{
+            duration: 500;
         }
     }
 }
