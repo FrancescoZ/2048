@@ -7,6 +7,7 @@ Item {
     property int val_y
     property bool animMoveEnable;
     property bool animResizeEnable;
+    property bool aniColorEnabled;
     property bool visibilite: true;
     property int taille: 100;
     property int size: 100;
@@ -91,8 +92,10 @@ Item {
             }
 
             Behavior on color {
+                enabled: aniColorEnabled;
                 ColorAnimation {
-                    duration: 300
+                    objectName: "cAni";
+                    duration: 300;
                 }
             }
         }
@@ -102,7 +105,11 @@ Item {
             enabled: animResizeEnable;
             NumberAnimation {
                 objectName: "wAni";
+<<<<<<< HEAD
                 duration: 1000;
+=======
+                duration: 100;
+>>>>>>> 803ce1c82bd9e50fbdc72f56ab84c03a998aeae0
 
             }
         }
@@ -112,7 +119,11 @@ Item {
 
             NumberAnimation {
                 objectName: "hAni";
+<<<<<<< HEAD
                 duration: 1000;
+=======
+                duration: 100;
+>>>>>>> 803ce1c82bd9e50fbdc72f56ab84c03a998aeae0
 
             }
         }
@@ -135,6 +146,13 @@ Item {
                 duration: 200;
 
             }
+        }
+    }
+
+    Behavior on opacity {
+        enabled:animResizeEnable;
+        NumberAnimation{
+            duration: 500;
         }
     }
 }
