@@ -16,8 +16,8 @@ Item {
 
 
         visible: visibilite
-        width: size
-        height: size
+        width: taille
+        height: taille
         x: val_x
         y: val_y
         color: "transparent"
@@ -87,7 +87,7 @@ Item {
                 style: Text.Outline
                 font.bold: true
                 font.family: "Tahoma"
-                font.pixelSize: 45*size/100
+                font.pixelSize: 45*taille/100
             }
 
             Behavior on color {
@@ -97,12 +97,11 @@ Item {
             }
         }
 
-
         Behavior on width {
             enabled: animResizeEnable;
             NumberAnimation {
                 objectName: "wAni";
-                duration: 300;
+                duration: 100;
 
             }
         }
@@ -112,7 +111,7 @@ Item {
 
             NumberAnimation {
                 objectName: "hAni";
-                duration: 300;
+                duration: 100;
 
             }
         }
@@ -122,7 +121,7 @@ Item {
             objectName: "xmove"
             NumberAnimation {
                 objectName: "xAni";
-                duration: 200;
+                duration: 100;
 
             }
         }
@@ -132,7 +131,7 @@ Item {
             objectName: "ymove"
             NumberAnimation {
                 objectName: "yAni";
-                duration: 200;
+                duration: 100;
 
             }
         }
