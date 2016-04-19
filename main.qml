@@ -69,6 +69,8 @@ Rectangle {
         imageSource: "plus.png"
         onClicked: {
            gamer.setTaille(gamer.getTaille+1);
+            gameContainer.visibilite=false;
+            header.foco=true;
         }
     }
 
@@ -81,6 +83,8 @@ Rectangle {
         imageSource: "minus.jpg"
         onClicked: {
            gamer.setTaille(gamer.getTaille-1);
+            gameContainer.visibilite=false;
+            header.foco=true;
         }
     }
     Rectangle {

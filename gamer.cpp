@@ -8,7 +8,9 @@ Gamer::Gamer(QQmlEngine *machine, QQuickItem *racine,int gridSize )
     size=gridSize;
 
     taille=4; //taille du Gamer par default
+    //on lis la valuer max des jeux precedents
     readBestScore();
+    //on commence un jeu
     startGame();
 
 }
@@ -33,6 +35,7 @@ void Gamer::startGame()
     deleteCells();
     t=t2;
 
+    //on cree deux box casuelles
     spawnCell();
     spawnCell();
 
@@ -56,7 +59,6 @@ int Gamer::getTaille()
 int Gamer::getGridSize(){
     return size;
 }
-
 int Gamer::getMaxValue()
 {
     int max=0;
@@ -65,9 +67,6 @@ int Gamer::getMaxValue()
             if(t[i][j]>max)
                 max=t[i][j];
     return max;
-}
-void Gamer::setScore(int a){
-    score+=a;
 }
 QString Gamer::getScore(){
     return QString::number(score);
@@ -78,6 +77,19 @@ QString Gamer::getBestScore(){
         writeBestScore();
     }
     return QString::number(bestScore);
+}
+
+// change la taille du tableau et commence un nouveau jeu
+void Gamer::setTaille(int tail)
+{
+    //on augmente le nombre de colon et ligne 4 min et 6 max
+    if (tail>3 && tail<7){
+        taille=tail;
+        startGame();
+    }
+}
+void Gamer::setScore(int a){
+    score+=a;
 }
 
 void Gamer::writeBestScore()
@@ -97,15 +109,7 @@ void Gamer::readBestScore()
     settings.endGroup();
 }
 
-// change la taille du tableau et commence un nouveau jeu
-void Gamer::setTaille(int tail)
-{
-    if (tail>3){
-        taille=tail;
-        startGame();
-    }
-}
-
+//trouve à position casuelle
 int Gamer::random_index(int x)
 {
     int index;
@@ -113,14 +117,13 @@ int Gamer::random_index(int x)
     index=rand()%x+0;
     return index;
 }
+
 //supprime toutes les Cells du vecteur c
 void Gamer::deleteCells()
 {
     for (int i=c.size(); i>0; i--)
-    {
         delete c[i-1];
-    }
-        c.clear();
+    c.clear();
 }
 
 //fonction qui ajoute une nouvelle Cell au tableau dans la position (j,i) avec la valeur a
@@ -169,6 +172,7 @@ void Gamer::showCells()
         qDebug()<<"error";
 
 }
+
 int Gamer::getCellIndice(int x,int y)
 {
     for (uint i=0; i<c.size(); i++)
@@ -183,39 +187,56 @@ int Gamer::getCellIndice(int x,int y)
 
 void Gamer::checkLoser(){
     vector<vector<int> > copy=t;
+    //on regarde si on peut faire un autre mouvement, (la methode moveVert et movHor return true si elle fait de
+    //changement) REMARQUE: on n'affiche pas les modifications et on ne les enregistre pas
+    //UP
     for (int colmn=0;colmn<taille;colmn++)
         if (moveVert(taille-1,colmn,-1,false,false)){
             t=copy;
             return;
         }
+    //DOWN
     for (int colmn=0;colmn<taille;colmn++)
         if (moveVert(0,colmn,1,false,false)){
             t=copy;
             return;
         }
+    //RIGHT
     for (int rows=0;rows<taille;rows++)
        if (moveHor(rows,taille-1,-1,false,false)){
            t=copy;
            return;
        }
+    //LEFT
     for (int rows=0;rows<taille;rows++)
         if (moveHor(rows,0,1,false,false)){
             t=copy;
             return;
         }
+    //si on est arrivé ici veut dire que acune movuvement est possible
     end=true;
 
 }
 
+
 bool Gamer::moveVert( int x, int y, int d , bool ret,bool update)
 {
+    //X: est la ligne du on parte, Y: la colons,d: est l'increment qui faut faire pour controller la box succesive,
+    //ret: le valeur qui il faut returner si on ne fait pas de changement
+    //update nous indique si il faut afficher les modifications
+    //on est sortie de la grid donc la methode est terminée
     if (x<0 || x>=taille || x+d<0 || x+d>=taille)
         return ret;
     if (y<0 || y>=taille)
         return ret;
+    //si ici il n'y a rien on passe à la prochaine box
     if (t[x][y]==0)
         return moveVert(x+d,y,d,ret,update);
+    //autrement on bouge toutes les box qui sont apres, faisons cela on comprende si il y a de case vide apres celle
+    //ou on se trouve
     moveVert(x+d,y,d,ret,update);
+    //une fois que on a bougé toutes les box apres la notre on regarde:
+    //si on peut faire un merge
     if (t[x][y]==t[x+d][y] && (update ? (!c[getCellIndice(y,x+d)]->getBlock() && !c[getCellIndice(y,x)]->getBlock()) :
     true)){
         //merge
@@ -230,6 +251,7 @@ bool Gamer::moveVert( int x, int y, int d , bool ret,bool update)
         }
         return moveVert(x+d,y,d,true,update);
     }
+    //si on peut deplacer la box selectionnée
     else if (t[x+d][y]==0){
             //mouve
         t[x+d][y]=t[x][y];
@@ -240,11 +262,14 @@ bool Gamer::moveVert( int x, int y, int d , bool ret,bool update)
            return moveVert(x+d,y,d,true,update);
     }
     else if (moveVert(x+d,y,d,false,update))
+        //si on une fois avoir fait les modifications on peut encore bouger les celles apres on essie de deplacer
+        //la box selectionnée
         return moveVert(x,y,d,true,update);
     return ret;
 }
 bool Gamer::moveHor( int x, int y, int d , bool ret,bool update)
 {
+    //la methode suivante est egale à moveVert mais elle controle les ligne et non le colons
     if (x<0 || x>=taille)
         return ret;
     if (y<0 || y>=taille|| y+d<0 || y+d>=taille)
@@ -281,20 +306,28 @@ bool Gamer::moveHor( int x, int y, int d , bool ret,bool update)
     return ret;
 }
 
+//puor chaque methode suivant on suive ce processus:
+//on enregistre la position des box actuelle
+//on esseie de bouger les box selon la methode
+//on verifie si nous avons perdu
+//on affiche le modifications de l'engine à l'interface
 bool Gamer::up(){
     bool move=false;
     nextTable(t);
+    //on scan toutes les colons et pour chaque on part du bas et on monte
     for (int colmn=0;colmn<taille;colmn++)
         if (moveVert(taille-1,colmn,-1,false,true))
             move=true;
     if (!move)
         checkLoser();
+    //on applique les modifications
     refresh(move);
     return true;
 }
 bool Gamer::down(){
     bool move=false;
     nextTable(t);
+    //on scan toutes les colons et pour chaque on part du haut et on descende
     for (int colmn=0;colmn<taille;colmn++)
         if (moveVert(0,colmn,1,false,true))
             move=true;
@@ -306,6 +339,7 @@ bool Gamer::down(){
 bool Gamer::left(){
     bool move=false;
     nextTable(t);
+    //on scan toutes les lignes et pour chaque on part du droit et on va vers la gauche
     for (int rows=0;rows<taille;rows++)
        if (moveHor(rows,taille-1,-1,false,true))
                move=true;
@@ -317,6 +351,7 @@ bool Gamer::left(){
 bool Gamer::right(){
     bool move=false;
     nextTable(t);
+    //on scan toutes les lignes et pour chaque on part du droit et on va vers la gauche
     for (int rows=0;rows<taille;rows++)
         if (moveHor(rows,0,1,false,true))
             move=true;
@@ -327,7 +362,9 @@ bool Gamer::right(){
     return true;
 }
 
+
 void Gamer::undo(){
+    //chaque fois on efface tout les box et on les affiche à nouveau
     if (active-1<0)
         return;
     t=history[--active];
@@ -354,7 +391,7 @@ bool Gamer::gameStatus(){
 }
 
 void Gamer::refresh(bool move){
-    //met à jour les positions du tableau QML
+    //met à jour les positions du tableau QML et debloque les box qui ont été merged
     for(int i=c.size()-1; i>=0; i--){
         c[i]->refreshPosition();
         c[i]->setBlock(false);
@@ -381,6 +418,8 @@ bool Gamer::animRunning()
 
 //fonction qui sauvegarde le jeu dans un fichier .txt
 void Gamer::saveGame(){
+    //on enregistre touts les mouvement et les scores grace à une fonctionnalité de QT qui permet d'enregister de
+    //donnés sans utiliser de fiche
     std::ofstream boards;
     boards.open ("qt_sav.qm");
 
@@ -410,6 +449,7 @@ void Gamer::saveGame(){
 //charge un jeu ancien
 bool Gamer::loadGame()
 {
+    //on sauvegarder au contraire de l'enregistrement
     std::ifstream boards;
     boards.open ("qt_sav.qm");
 

@@ -18,24 +18,24 @@ BoxItem::BoxItem(QQmlEngine *machine, QQuickItem *racine, int i, int j, int a, i
     for(int k=0; k<taille; k++)
         placement.push_back(8+gridSize*k/taille);
 
-
+    //on impose le conditions initiales
     object->setProperty("size", gridSize/taille-6);
     object->setProperty("taille", 1);
     object->setProperty("val_x", placement[j]);
     object->setProperty("val_y", placement[i]);
-
     object->setProperty("valeur", a);
-
 
     x=j;
     y=i;
     value=a;
     block=false;
 
+    //on active les animations
     object->setProperty("animResizeEnable", true);
     object->setProperty("animMoveEnable", true);
     object->setProperty("animColorEnable", true);
 
+    //on montre la box
     object->setProperty("visibilite", true);
     object->setProperty("taille", 424/taille-6);
     object->setProperty("opacity",1);
@@ -51,12 +51,12 @@ BoxItem::~BoxItem()
 {
     destroy();
 }
-
 void BoxItem::destroy()
 {
     delete object;
 }
 
+//Voir header pour connaitre le fonctionnement des ces variables
 int BoxItem::getX()
 {
     return x;
@@ -72,6 +72,11 @@ int BoxItem::getVal()
 bool BoxItem::getBlock(){
     return block;
 }
+bool BoxItem::getMerged()
+{
+    return merged;
+}
+
 
 void BoxItem::setBlock(bool bl){
     block=bl;
@@ -89,15 +94,22 @@ void BoxItem::setVal(int nVal)
     if (!block)
         value=nVal;
 }
+void BoxItem::changeMerged(bool a)
+{
+    merged=a;
+    object->setProperty("size", 0);
+}
 
 void BoxItem::refreshPosition()
 {
+    //on prende le pixels qui corresponde à la colons X et la ligne Y
     object->setProperty("val_x", placement[x]);
     object->setProperty("val_y", placement[y]);
 
 }
 void BoxItem::refreshValue()
 {
+    //Chaque fois que la valuer change on doit changer aussi la taille du text
     object->setProperty("taille", 430/taille);
     object->setProperty("valeur", value);
     object->setProperty("taille", 424/taille-6);
@@ -105,17 +117,6 @@ void BoxItem::refreshValue()
    //qDebug()<<"refreshed";
 
 }
-
-bool BoxItem::getMerged()
-{
-    return merged;
-}
-void BoxItem::changeMerged(bool a)
-{
-    merged=a;
-    object->setProperty("size", 0);
-}
-
 
 bool BoxItem::getAnimRunning()
 {

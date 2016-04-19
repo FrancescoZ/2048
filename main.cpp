@@ -11,6 +11,7 @@
 
 int main(int argc, char *argv[])
 {
+    //Initialisation de l'interface utilisateur
     QGuiApplication app(argc, argv);
     QQuickView viewer;
 
@@ -18,14 +19,18 @@ int main(int argc, char *argv[])
     srand(time(NULL));
     qsrand(time(NULL));
 
+    //Nous disons quelle forme doit avoir l'interface
     viewer.setSource(QUrl(QStringLiteral("qrc:/main.qml")));
 
+    //Nous prendons les objet principales pour pouvoir gerer ensuite l'interface
     QQuickItem *root = viewer.rootObject();
     QQmlEngine *engine = viewer.engine();
 
+    //Objet qui gere tout le joue, on le lie à l'interface
     Gamer gamer(engine, root,450);
     viewer.rootContext()->setContextProperty("gamer", &gamer);
 
+    //on montre l'interface chargé
     viewer.show();
 
     return app.exec();
